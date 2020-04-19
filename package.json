@@ -1,5 +1,5 @@
 {
-  "name": "@ian/zeit-graphql",
+  "name": "zeit-graphql",
   "version": "1.0.0",
   "description": "GraphQL support for Zeit Functions",
   "main": "index.js",
