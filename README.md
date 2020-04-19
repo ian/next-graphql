@@ -1,6 +1,6 @@
 # zeit-graphql
 
-Easy to setup GraphQL server for Zeit Functions
+Easy to setup GraphQL server for Zeit Functions.  See https://zeit.co/docs/v2/serverless-functions/introduction for more details from Zeit.
 
 # Installation
 
@@ -61,13 +61,13 @@ export default createHandler({
 
 Options
 
-| Param         | Type          | Note  |
+| Param         | Type          | |
 | ------------- |:-------------:| -----:|
-| `log`           | boolean       | Log all GQL queries, default: false |
-| `typeDefs`      | string        |  |
-| `resolvers`     | object        |  |
-| `directives`    | object        | `{ async authenticate(next, src, args, context) { ... }}` |
-| `context`       | function      | `async (req) => ...` |
+| `log`           | boolean     | Log all GQL queries, default: false |
+| `typeDefs`      | string      | |
+| `resolvers`     | object      | |
+| `directives`    | object      | |
+| `context`       | function    | `async (req) => ...` |
 
 ## JWT Auth example With directives and context
 
@@ -77,6 +77,9 @@ Options
 
 import jwt from "jsonwebtoken"
 import { createHandler } from "~/zeit-graphql"
+
+const { SECRET } = process.env
+if (!secret) throw new Error("Make sure to set SECRET in .env)
 
 const typeDefs = `
   type Auth {
