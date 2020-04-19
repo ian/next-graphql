@@ -1,0 +1,27 @@
+{
+  "name": "@ian/zeit-graphql",
+  "version": "1.0.0",
+  "description": "GraphQL support for Zeit Functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ian/zeit-graphql.git"
+  },
+  "keywords": [
+    "graphql",
+    "zeit"
+  ],
+  "author": "Ian Hunter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ian/zeit-graphql/issues"
+  },
+  "homepage": "https://github.com/ian/zeit-graphql#readme",
+  "dependencies": {
+    "graphql": "^15.0.0",
+    "graphql-tools": "^5.0.0"
+  }
+}
