@@ -1,5 +1,5 @@
-import { graphql } from "graphql"
-import { makeExecutableSchema } from "graphql-tools"
+const { graphql } = require("graphql")
+const { makeExecutableSchema } = require("graphql-tools")
 
 export function createHandler(props) {
   const { log, typeDefs, resolvers, directives, operationName } = props
@@ -44,6 +44,6 @@ export function createHandler(props) {
   }
 }
 
-export default {
+module.exports = {
   createHandler,
 }
