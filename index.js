@@ -1,7 +1,7 @@
 const { graphql } = require("graphql")
 const { makeExecutableSchema } = require("graphql-tools")
 
-export function createHandler(props) {
+function createHandler(props) {
   const { log, typeDefs, resolvers, directives, operationName } = props
 
   const schema = makeExecutableSchema({
