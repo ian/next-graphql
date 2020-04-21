@@ -1,21 +1,21 @@
-# zeit-graphql
+# next-graphql
 
-Easy to setup GraphQL server for Zeit Functions.  See https://zeit.co/docs/v2/serverless-functions/introduction for more details from Zeit.
+Drop dead simple GraphQL implementation for Next.js.  Works with vanilla Next.js and Zeit Serverless Functions (see https://zeit.co/docs/v2/serverless-functions/introduction for more details).
 
 # Installation
 
-`yarn add zeit-graphql`
+`yarn add next-graphql`
 
 or 
 
-`npm i -s zeit-graphql`
+`npm i -s next-graphql`
 
 # Example
 
 ```
 # pages/api/graphql.js 
 
-import { createHandler } from "zeit-graphql"
+import { createHandler } from "next-graphql"
 
 let ITEMS = [
   { name: "First" }
@@ -76,7 +76,7 @@ Options
 # Assumes that a `Authorization: $TOKEN` header is sent from the client.
 
 import jwt from "jsonwebtoken"
-import { createHandler } from "~/zeit-graphql"
+import { createHandler } from "~/next-graphql"
 
 const { SECRET } = process.env
 if (!secret) throw new Error("Make sure to set SECRET in .env)

@@ -1,25 +1,26 @@
 {
-  "name": "zeit-graphql",
+  "name": "next-graphql",
   "version": "1.0.2",
-  "description": "GraphQL support for Zeit Functions",
+  "description": "GraphQL support for Next.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ian/zeit-graphql.git"
+    "url": "git+https://github.com/ian/next-graphql.git"
   },
   "keywords": [
     "graphql",
-    "zeit"
+    "zeit",
+    "nextjs"
   ],
   "author": "Ian Hunter",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ian/zeit-graphql/issues"
+    "url": "https://github.com/ian/next-graphql/issues"
   },
-  "homepage": "https://github.com/ian/zeit-graphql#readme",
+  "homepage": "https://github.com/ian/next-graphql#readme",
   "dependencies": {
     "graphql": "^15.0.0",
     "graphql-tools": "^5.0.0"
