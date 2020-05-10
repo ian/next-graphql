@@ -2,7 +2,7 @@ const { graphql } = require("graphql")
 const { makeExecutableSchema } = require("graphql-tools")
 
 function createHandler(props) {
-  const { log, typeDefs, resolvers, directives, operationName } = props
+  const { cors, log, typeDefs, resolvers, directives, operationName } = props
 
   const schema = makeExecutableSchema({
     typeDefs,
@@ -32,6 +32,16 @@ function createHandler(props) {
       )
 
       res.setHeader('Content-Type', 'application/json')
+      if (cors) {
+        console.log('cors', cors)
+        const { origin = "*", optionsSuccessStatus = 204 } = cors
+        res.setHeader("Access-Control-Allow-Origin", origin)
+
+        if (req.method === "OPTIONS") {
+          return res.status(optionsSuccessStatus).send('')
+        }
+      }
+
       res.status(200).send(JSON.stringify(body))
     } catch (err) {
       console.log(err)
