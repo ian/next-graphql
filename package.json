@@ -1,6 +1,6 @@
 {
   "name": "next-graphql",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "GraphQL support for Next.js",
   "main": "index.js",
   "scripts": {
