@@ -21,7 +21,11 @@ function createHandler(props) {
         if (variables) console.log("variables: ", JSON.stringify(variables))
       }
 
-      const context = props.context && (await props.context(req))
+      const context = {
+        ...(props.context && (await props.context(req))),
+        req,
+        res
+      }
       const body = await graphql(
         schema,
         query,
