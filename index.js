@@ -2,15 +2,23 @@ const { graphql } = require("graphql")
 const { makeExecutableSchema } = require("graphql-tools")
 
 function logError(errorLogger, error) {
-    if (errorLogger) {
-      errorLogger(error)
-    } else {
-      console.error(error)
-    }
+  if (errorLogger) {
+    errorLogger(error)
+  } else {
+    console.error(error)
+  }
 }
 
 function createHandler(props) {
-  const { cors, log, typeDefs, resolvers, directives, operationName, errorLogger } = props
+  const {
+    cors,
+    log,
+    typeDefs,
+    resolvers,
+    directives,
+    operationName,
+    errorLogger,
+  } = props
 
   const schema = makeExecutableSchema({
     typeDefs,
@@ -32,7 +40,7 @@ function createHandler(props) {
       const context = {
         ...(props.context && (await props.context(req))),
         req,
-        res
+        res,
       }
       const body = await graphql(
         schema,
@@ -40,25 +48,29 @@ function createHandler(props) {
         {},
         context,
         variables,
-        operationName,
+        operationName
       )
 
-      res.setHeader('Content-Type', 'application/json')
+      res.setHeader("Content-Type", "application/json")
       if (cors) {
         const { origin = "*", optionsSuccessStatus = 204 } = cors
 
         res.setHeader("Access-Control-Allow-Origin", origin)
         res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS")
-        
+        res.setHeader(
+          "Access-Control-Allow-Headers",
+          "Authorization, Content-Type"
+        )
+
         if (req.method === "OPTIONS") {
-          return res.status(optionsSuccessStatus).send('')
+          return res.status(optionsSuccessStatus).send("")
         }
       }
 
       if (body.errors && body.errors.length > 0) {
         logError(errorLogger, body.errors[0])
       }
-      
+
       res.status(200).send(JSON.stringify(body))
     } catch (err) {
       logError(errorLogger, err)
