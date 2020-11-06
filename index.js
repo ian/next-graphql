@@ -53,14 +53,11 @@ function createHandler(props) {
 
       res.setHeader("Content-Type", "application/json")
       if (cors) {
-        const { origin = "*", optionsSuccessStatus = 204 } = cors
+        const { origin = "*", headers = "*", optionsSuccessStatus = 204 } = cors
 
         res.setHeader("Access-Control-Allow-Origin", origin)
         res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS")
-        res.setHeader(
-          "Access-Control-Allow-Headers",
-          "Authorization, Content-Type"
-        )
+        res.setHeader("Access-Control-Allow-Headers", headers)
 
         if (req.method === "OPTIONS") {
           return res.status(optionsSuccessStatus).send("")
