@@ -1,19 +1,19 @@
 # next-graphql
 
-Drop dead simple GraphQL implementation for Next.js.  Works with vanilla Next.js and Zeit Serverless Functions (see https://zeit.co/docs/v2/serverless-functions/introduction for more details).
+Drop dead simple GraphQL implementation for Next.js. Works with vanilla Next.js and Zeit Serverless Functions (see https://zeit.co/docs/v2/serverless-functions/introduction for more details).
 
 # Installation
 
 `yarn add next-graphql`
 
-or 
+or
 
 `npm i -s next-graphql`
 
 # Example
 
 ```
-# pages/api/graphql.js 
+# pages/api/graphql.js
 
 import { createHandler } from "next-graphql"
 
@@ -23,7 +23,7 @@ let ITEMS = [
 
 const typeDefs = `
   type Item {
-    name: String! 
+    name: String!
   }
 
   type Query {
@@ -50,9 +50,20 @@ const resolvers = {
   }
 }
 
+const errorLogger = (err, context) => {
+  console.log("Error Occurred:")
+  console.log("Message", err.message)
+  console.log("Query", JSON.stringify(context.gql.query, null, 2))
+
+  // Add your exception tracking here (Bugsnag, Log Rocket, ...)
+}
+
 export default createHandler({
+  log: true, // will output all GQL requests, default false
   typeDefs,
   resolvers,
+  errorLogger,
+  cors: { origin = "*", headers = "*", optionsSuccessStatus = 204 } // default values, by default no cors is enabled
 })
 
 ```
@@ -61,13 +72,13 @@ export default createHandler({
 
 Options
 
-| Param         | Type          | |
-| ------------- |:-------------:| -----:|
-| `log`           | boolean     | Log all GQL queries, default: false |
-| `typeDefs`      | string      | |
-| `resolvers`     | object      | |
-| `directives`    | object      | |
-| `context`       | function    | `async (req) => ...` |
+| Param        |   Type   |                                     |
+| ------------ | :------: | ----------------------------------: |
+| `log`        | boolean  | Log all GQL queries, default: false |
+| `typeDefs`   |  string  |                                     |
+| `resolvers`  |  object  |                                     |
+| `directives` |  object  |                                     |
+| `context`    | function |                `async (req) => ...` |
 
 ## JWT Auth example With directives and context
 
@@ -88,7 +99,7 @@ const typeDefs = `
   }
 
   type User {
-    name: String! 
+    name: String!
   }
 
   type Query {

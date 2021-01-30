@@ -1,8 +1,6 @@
 import { createHandler } from "../../../index"
 
-let ITEMS = [
-  { name: "First" }
-]
+let ITEMS = [{ name: "First" }]
 
 const typeDefs = `
   type Item {
@@ -14,7 +12,8 @@ const typeDefs = `
   }
 
   type Mutation {
-    createItem(name:String!): Item!
+    createItem(name: String!): Item!
+    generateError(message: String!): String
   }
 `
 
@@ -29,12 +28,20 @@ const resolvers = {
       const item = { name }
       ITEMS.push(item)
       return item
-    }
-  }
+    },
+    generateError: async (obj, { message }) => {
+      throw new Error(message)
+    },
+  },
 }
 
 export default createHandler({
   cors: true,
   typeDefs,
   resolvers,
+  errorLogger: (err, context) => {
+    console.log("Error Occurred:")
+    console.log("Message", err.message)
+    console.log("Query", JSON.stringify(context.gql.query, null, 2))
+  },
 })

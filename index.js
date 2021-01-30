@@ -28,7 +28,8 @@ function createHandler(props) {
 
   return async (req, res) => {
     const { query, variables } = req.body
-    const { method, query, body, headers, url } = req
+
+    const { method, body, headers, url } = req
     const errorContext = {
       gql: { query, variables, operationName },
       req: { method, query, body, headers, url },
