@@ -1,9 +1,9 @@
 const { graphql } = require("graphql")
 const { makeExecutableSchema } = require("graphql-tools")
 
-function logError(errorLogger, error) {
+function logError(errorLogger, error, context) {
   if (errorLogger) {
-    errorLogger(error)
+    errorLogger(error, context)
   } else {
     console.error(error)
   }
@@ -28,7 +28,11 @@ function createHandler(props) {
 
   return async (req, res) => {
     const { query, variables } = req.body
-
+    const { method, query, body, headers, url } = req
+    const errorContext = {
+      gql: { query, variables, operationName },
+      req: { method, query, body, headers, url },
+    }
     try {
       if (log) {
         console.log()
@@ -48,7 +52,7 @@ function createHandler(props) {
         {},
         context,
         variables,
-        operationName,
+        operationName
       )
 
       res.setHeader("Content-Type", "application/json")
@@ -65,11 +69,11 @@ function createHandler(props) {
       }
 
       if (body.errors && body.errors.length > 0) {
-        logError(errorLogger, body.errors[0])
+        logError(errorLogger, body.errors[0], errorContext)
       }
       res.status(200).send(JSON.stringify(body))
     } catch (err) {
-      logError(errorLogger, err)
+      logError(errorLogger, err, errorContext)
       res.status(401).send(
         JSON.stringify({
           errors: [err.message],
