@@ -1,28 +1,54 @@
 {
   "name": "next-graphql",
-  "version": "1.0.8",
-  "description": "GraphQL support for Next.js",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./client": "./dist/client.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf ./dist",
+    "build": "tsc",
+    "build:watch": "tsc --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ian/next-graphql.git"
-  },
-  "keywords": [
-    "graphql",
-    "vercel",
-    "nextjs"
-  ],
   "author": "Ian Hunter",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ian/next-graphql/issues"
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
-  "homepage": "https://github.com/ian/next-graphql#readme",
+  "devDependencies": {
+    "boxen": "^5.0.1",
+    "graphql-code-generator": "^0.18.2",
+    "nodemon": "^2.0.12",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
   "dependencies": {
-    "graphql": "^15.0.0",
-    "graphql-tools": "^5.0.0"
+    "@graphql-codegen/cli": "^2.1.1",
+    "@graphql-codegen/typescript": "^2.0.0",
+    "@graphql-codegen/typescript-operations": "^2.0.1",
+    "@graphql-codegen/typescript-urql": "^3.0.0",
+    "@graphql-tools/code-file-loader": "6.2.6",
+    "@graphql-tools/stitch": "^8.2.1",
+    "@graphql-tools/wrap": "^8.0.13",
+    "@types/react": "^17.0.19",
+    "apollo-server-micro": "^3.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "graphql": "^15.3.0",
+    "graphql-middleware": "^6.1.4",
+    "graphql-request": "^3.5.0",
+    "graphql-shield": "^7.5.0",
+    "micro": "^9.3.4",
+    "next-auth": "^3.29.0",
+    "ora": "^5.4.1",
+    "urql": "^2.0.4"
   }
 }
