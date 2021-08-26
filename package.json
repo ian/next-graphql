@@ -14,9 +14,11 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "tsc",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "publish": "yarn clean && yarn build && npm publish"
   },
-  "author": "Ian Hunter",
+  "author": "Ian Hunter <ian@01.studio>",
+  "repository": "https://github.com/ian/next-graphql",
   "license": "MIT",
   "devDependencies": {
     "boxen": "^5.0.1",
