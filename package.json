@@ -1,7 +1,7 @@
 {
   "name": "next-graphql",
-  "version": "2.0.0",
-  "description": "",
+  "version": "2.0.0-alpha.1",
+  "description": "GraphQL for Next.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
