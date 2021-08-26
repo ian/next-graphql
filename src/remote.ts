@@ -24,7 +24,7 @@ export default async function remote(
     const { document, variables } = opts
     const query = print(document)
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NEXT_GRAPHQL_DEBUG) {
       console.log(`
 POST to ${url}
 ${query}
