@@ -14,7 +14,8 @@ export default function nextGraphQL(config: Config = {}) {
       const apolloServer = new ApolloServer({
         schema,
         logger: console,
-        introspection: process.env.NODE_ENV === "development"
+        introspection: true
+        // introspection: process.env.NODE_ENV === "development"
       })
 
       await apolloServer.start()

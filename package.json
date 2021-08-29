@@ -9,7 +9,7 @@
     "./client": "./dist/client.js"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=12"
   },
   "scripts": {
     "clean": "rm -rf ./dist",
