@@ -3,8 +3,9 @@ import { applyMiddleware } from "graphql-middleware"
 import { authMiddleware } from "./auth"
 import stitch from "./stitch"
 import { shield } from "./guards"
+import { Config } from "./types"
 
-export async function buildSchema(opts) {
+export async function buildSchema(opts: Config) {
   const { schemas, extensions } = opts
   const subschemas = await Promise.all(Object.values(schemas))
 

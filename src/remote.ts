@@ -28,7 +28,7 @@ export default async function remote(
       console.log(`
 POST to ${url}
 ${query}
-${variables}
+${JSON.stringify(variables, null, 2)}
 `)
     }
 

@@ -4,7 +4,7 @@ import { buildSchema } from "./schema"
 import { Config } from "./types"
 
 export default function nextGraphQL(config: Config = {}) {
-  const { codegen, schemas, extensions = [] } = config
+  const { schemas, extensions = [] } = config
 
   return async function handler(req, res) {
     // console.log(req.method, req.url)
