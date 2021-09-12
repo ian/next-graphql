@@ -1,6 +1,6 @@
 {
   "name": "next-graphql",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "description": "GraphQL for Next.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "clean": "rm -rf ./dist",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "publish": "yarn clean && yarn build && npm publish"
+    "release": "yarn clean && yarn build && npm publish"
   },
   "author": "Ian Hunter <ian@01.studio>",
   "repository": "https://github.com/ian/next-graphql",
