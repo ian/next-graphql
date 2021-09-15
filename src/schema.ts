@@ -1,8 +1,8 @@
 import { applyMiddleware } from "graphql-middleware"
 
-import { authMiddleware } from "./auth"
+// import { authMiddleware } from "./auth"
 import stitch from "./stitch"
-import { shield } from "./guards"
+// import { shield } from "./guards"
 import { Config } from "./types"
 
 export async function buildSchema(opts: Config) {
@@ -32,7 +32,7 @@ export async function buildSchema(opts: Config) {
   const schemaWithMiddleware = applyMiddleware(
     schema,
     // authMiddleware,
-    shield(guards),
+    // shield(guards),
     middleware
   )
 
