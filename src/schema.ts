@@ -11,7 +11,7 @@ export async function buildSchema(opts: Config) {
   
   const typeDefs = []
   const resolvers = {}
-  const middleware = {}
+  const middleware = []
   const guards = {}
 
   extensions.forEach(extension => {
@@ -19,8 +19,8 @@ export async function buildSchema(opts: Config) {
     typeDefs.push(extended.typeDefs)
     // deepmerge ?!?
     Object.assign(resolvers, extended.resolvers)
-    Object.assign(middleware, extended.middleware)
     Object.assign(guards, extended.guards)
+    if (extended.middleware) middleware.push(extended.middleware)
   })
 
   const stitchableExtensions = {
@@ -33,7 +33,7 @@ export async function buildSchema(opts: Config) {
     schema,
     // authMiddleware,
     // shield(guards),
-    middleware
+    ...middleware.flat()
   )
 
   return schemaWithMiddleware
