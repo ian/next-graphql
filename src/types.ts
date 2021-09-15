@@ -3,8 +3,8 @@ import { SubschemaConfig } from "@graphql-tools/delegate"
 import { Rule } from "graphql-shield/dist/rules"
 
 export type Extension = {
-  typeDefs: string
-  resolvers: {
+  typeDefs?: string
+  resolvers?: {
     [key: string]: any
   }
   middleware?: {
