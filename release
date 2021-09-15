@@ -1,0 +1,5 @@
+#!/bin/bash
+
+yarn dist
+npm version patch
+npm publish

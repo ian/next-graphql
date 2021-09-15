@@ -18,6 +18,7 @@
     "clean": "rm -rf ./dist",
     "build": "tsc",
     "build:watch": "tsc --watch",
+    "dist": "yarn clean && yarn build",
     "release": "yarn clean && yarn build && npm publish"
   },
   "author": "Ian Hunter <ian@01.studio>",
