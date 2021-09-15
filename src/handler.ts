@@ -11,14 +11,17 @@ export default function nextGraphQL(config: Config = {}) {
       const apolloServer = new ApolloServer({
         schema,
         logger: console,
-        introspection: true
+        introspection: true,
+        context: ({ req, res }) => ({ req, res })
         // introspection: process.env.NODE_ENV === "development"
       })
 
       await apolloServer.start()
-      await apolloServer.createHandler({
-        path: "/api/graphql"
-      })(req, res)
+      const handler = apolloServer.createHandler({
+        path: "/api/graphql",
+      })
+      
+      await handler(req, res)
     } else {
       res.send("next-graphql - WIP")
     }
