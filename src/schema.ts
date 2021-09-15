@@ -2,7 +2,7 @@ import { applyMiddleware } from "graphql-middleware"
 
 // import { authMiddleware } from "./auth"
 import stitch from "./stitch"
-// import { shield } from "./guards"
+import { shield } from "./guards"
 import { Config } from "./types"
 
 export async function buildSchema(opts: Config) {
@@ -11,7 +11,7 @@ export async function buildSchema(opts: Config) {
   
   const typeDefs = []
   const resolvers = {}
-  const middleware = {}
+  const middleware = []
   const guards = {}
 
   extensions.forEach(extension => {
@@ -19,8 +19,8 @@ export async function buildSchema(opts: Config) {
     typeDefs.push(extended.typeDefs)
     // deepmerge ?!?
     Object.assign(resolvers, extended.resolvers)
-    Object.assign(middleware, extended.middleware)
     Object.assign(guards, extended.guards)
+    if (extended.middleware) middleware.push(extended.middleware)
   })
 
   const stitchableExtensions = {
@@ -32,8 +32,8 @@ export async function buildSchema(opts: Config) {
   const schemaWithMiddleware = applyMiddleware(
     schema,
     // authMiddleware,
-    // shield(guards),
-    middleware
+    shield(guards),
+    ...middleware.flat()
   )
 
   return schemaWithMiddleware
