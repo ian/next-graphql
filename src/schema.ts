@@ -8,7 +8,7 @@ import { Config } from "./types"
 export async function buildSchema(opts: Config) {
   const { schemas, extensions } = opts
   const subschemas = await Promise.all(Object.values(schemas))
-
+  
   const typeDefs = []
   const resolvers = {}
   const middleware = {}
