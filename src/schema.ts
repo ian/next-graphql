@@ -14,7 +14,7 @@ export async function buildSchema(opts: Config) {
   const middleware = []
   const guards = {}
 
-  extensions.forEach(extension => {
+  extensions?.forEach(extension => {
     const extended = extension(schemas)
     typeDefs.push(extended.typeDefs)
     // deepmerge ?!?
