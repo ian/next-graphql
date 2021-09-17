@@ -1,7 +1,7 @@
+import { GraphQLSchema } from "graphql"
 import { fetch } from "cross-fetch"
 import { print } from "graphql"
-import { introspectSchema } from "@graphql-tools/wrap"
-import { SubschemaConfig } from "@graphql-tools/delegate"
+import { introspectSchema, wrapSchema } from "@graphql-tools/wrap"
 import prune, { PruneOpts } from "./prune"
 
 const DEFAULT_OPTS = {
@@ -19,7 +19,7 @@ type Opts = {
 export default async function remote(
   url: string,
   opts: Opts = DEFAULT_OPTS
-): Promise<SubschemaConfig> {
+): Promise<GraphQLSchema> {
   const { headers: optsHeaders = {}, debug = false } = opts
   const headers = { "Content-Type": "application/json", ...optsHeaders }
 
@@ -53,8 +53,9 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
     schema = prune(schema, opts.prune)
   }
 
-  return {
+  return wrapSchema({
     schema,
     executor
-  }
+  })
 }
+

@@ -1,5 +1,4 @@
 import { GraphQLSchema } from "graphql"
-import { SubschemaConfig } from "@graphql-tools/delegate"
 import { Rule } from "graphql-shield/dist/rules"
 
 export type Middleware = (
@@ -26,8 +25,7 @@ export type Extension = {
 export type Schemas = {
   [name: string]:
     | GraphQLSchema
-    | SubschemaConfig
-    | Promise<GraphQLSchema | SubschemaConfig>
+    | Promise<GraphQLSchema>
 }
 
 export type CodegenConfig = {

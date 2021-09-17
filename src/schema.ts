@@ -2,12 +2,12 @@ import _ from "lodash"
 import { applyMiddleware } from "graphql-middleware"
 
 import stitch from "./stitch"
-// import { shield } from "./guards"
 import { Config } from "./types"
+// import { shield } from "./guards"
 
 export async function buildSchema(opts: Config) {
   const { schemas, extensions } = opts
-  const subschemas = await Promise.all(Object.values(schemas))
+  const subschemas = await allPromiseValues(schemas)
   
   const typeDefs = []
   const resolvers = {}
@@ -15,7 +15,7 @@ export async function buildSchema(opts: Config) {
   const guards = {}
 
   extensions?.forEach(extension => {
-    const extended = extension(schemas)
+    const extended = extension(subschemas)
     if (extended.typeDefs) typeDefs.push(extended.typeDefs)
     _.merge(resolvers, extended.resolvers)
     _.merge(guards, extended.guards)
@@ -27,7 +27,7 @@ export async function buildSchema(opts: Config) {
     resolvers
   }
 
-  const schema = stitch(subschemas, stitchableExtensions)
+  const schema = stitch(Object.values(subschemas), stitchableExtensions)
   const schemaWithMiddleware = applyMiddleware(
     schema,
     // shield(guards),
@@ -35,4 +35,8 @@ export async function buildSchema(opts: Config) {
   )
 
   return schemaWithMiddleware
+}
+
+const allPromiseValues = async (object) => {
+  return _.zipObject(_.keys(object), await Promise.all(_.values(object)))
 }

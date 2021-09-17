@@ -1,20 +1,24 @@
-import {
-  delegateToSchema,
-  SubschemaConfig as Config,
-} from "@graphql-tools/delegate"
+import { delegateToSchema } from "@graphql-tools/delegate"
 
-export default function delegate(schema) {
-  return (obj, args, context, info) => {
+type Opts = {
+  args?: (object) => object
+  context?: (object) => object
+}
+
+export default function delegate(schema, opts: Opts = {}) {
+  return async (obj, args, context, info) => {
     const { fieldName } = info
     const { operation } = info.operation
 
-    return delegateToSchema({
+    const params = {
       schema,
       operation,
       fieldName,
-      args,
-      context,
+      args: opts.args ? opts.args(args) : args,
+      context: opts.context ? opts.context(context) : context,
       info,
-    })
+    }
+
+    return delegateToSchema(params)
   }
 }
