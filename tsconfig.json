@@ -3,6 +3,8 @@
   "include": ["./src"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -13,6 +15,7 @@
     "declaration": true,
     "sourceMap": true,
     "lib": ["es6", "DOM"],
+    
     // "baseUrl": ".",
     // // "module": "esnext",
     // "lib": ["dom", "dom.iterable", "esnext"],
