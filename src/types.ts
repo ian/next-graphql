@@ -1,4 +1,5 @@
 import { GraphQLSchema } from "graphql"
+import { ApolloServer } from "apollo-server-micro"
 import { Rule } from "graphql-shield/dist/rules"
 
 export type Middleware = (
@@ -36,4 +37,8 @@ export type Config = {
   schemas?: Schemas
   extensions?: ((schemas: Schemas) => Extension)[]
   // codegen?: CodegenConfig
+}
+
+export type Server = ApolloServer & {
+  schema: GraphQLSchema
 }

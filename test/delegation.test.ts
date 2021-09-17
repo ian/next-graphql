@@ -14,12 +14,14 @@ describe("extensions", () => {
       },
     })
 
-    const data = await testServer({
+    const config = {
       schemas: {
         spacex: remote("https://api.spacex.land/graphql"),
       },
       extensions: [overridder],
-    })
+    }
+    
+    const data = await testServer(config)
       .then(({ graphql }) =>
         graphql(`
           query {

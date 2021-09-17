@@ -19,19 +19,4 @@ describe("#remote", () => {
 
     expect(data.ships.length).toEqual(1)
   })
-
-  it("should allow pruning", async () => {
-    const schema = await testServer({
-      schemas: {
-        spacex: remote("https://api.spacex.land/graphql", {
-          prune: {
-            types: (type) => type !== "Ship"
-          }
-        })
-      }
-    }).then(({ schema }) => schema)
-
-    const typeMap = Object.keys(schema.getTypeMap())
-    expect(typeMap).not.toContain("Ship")
-  })
 })
