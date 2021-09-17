@@ -25,7 +25,8 @@ class RemovePrivateElementsTransform {
 
   constructor(opts: PruneOpts) {
     this.typeFilter = opts.types
-    this.fieldFilter = opts.types
+    this.fieldFilter = opts.fields
+    this.argumentFilter = opts.args
   }
 
   transformSchema(originalWrappingSchema) {

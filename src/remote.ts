@@ -58,7 +58,7 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
     transforms.push(pruneTransformer(opts.prune))
   }
 
-  const wrapped =  wrapSchema({
+  const wrapped = wrapSchema({
     schema,
     executor, 
     transforms
