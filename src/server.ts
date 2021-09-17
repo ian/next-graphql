@@ -12,6 +12,7 @@ export async function buildServer(config: Config): Promise<ApolloServer> {
     stopOnTerminationSignals: true,
     // introspection: process.env.NODE_ENV === "development"
   })
+  server['schema'] = schema
 
   await server.start()
   return server

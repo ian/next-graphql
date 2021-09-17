@@ -1,15 +1,11 @@
 import { fetch } from "cross-fetch"
 import { print } from "graphql"
-import { filterSchema, pruneSchema } from '@graphql-tools/utils';
-import { wrapSchema, introspectSchema } from "@graphql-tools/wrap"
+import { introspectSchema } from "@graphql-tools/wrap"
 import { SubschemaConfig } from "@graphql-tools/delegate"
+import prune, { PruneOpts } from "./prune"
 
 const DEFAULT_OPTS = {
   headers: {}
-}
-
-type PruneOpts = {
-
 }
 
 type Opts = {
@@ -51,8 +47,13 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
     return json
   }
 
+  let schema = await introspectSchema(executor)
+  if (opts.prune) {
+    schema = prune(schema, opts.prune)
+  }
+
   return {
-    schema: await introspectSchema(executor),
+    schema,
     executor
   }
 }
