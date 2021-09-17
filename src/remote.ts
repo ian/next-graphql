@@ -64,7 +64,10 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
     transforms
   }) as WrappedGraphQLSchema
 
-  wrapped.originalSchema = schema
+  wrapped.originalSchema = wrapSchema({
+    schema,
+    executor, 
+  })
 
   return wrapped
 }
