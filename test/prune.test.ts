@@ -18,20 +18,23 @@ describe("#prune", () => {
   })
 
   it("should allow field pruning", async () => {
+    const spacex = await remote("https://api.spacex.land/graphql", {
+      prune: {
+        fields: helpers.exceptFields({
+          "Ship": "name"
+        })
+      }
+    })
+
     const schema = await testServer({
       schemas: {
-        spacex: remote("https://api.spacex.land/graphql", {
-          prune: {
-            fields: helpers.exceptFields({
-              "Ship": "name"
-            })
-          }
-        })
+        spacex
       }
     }).then(({ schema }) => schema)
 
-    const typeMap = schema.getTypeMap()
-    const fields = typeMap['Ship'].toConfig()['fields']
-    expect(fields).not.toContain("name")
+    const fieldsFor = (s) => s.getTypeMap()['Ship'].toConfig()['fields']
+
+    expect(Object.keys(fieldsFor(schema))).not.toContain("name")
+    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
   })
 })
