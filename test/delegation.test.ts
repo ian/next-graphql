@@ -7,7 +7,7 @@ describe("extensions", () => {
       typeDefs: ``,
       resolvers: {
         Query: {
-          ship: delegate(schemas.spacex, {
+          ship: delegate(schemas.spacex.originalSchema, {
             args: (args) => ({ ...args, id: "ASOG" }),
           }),
         },
