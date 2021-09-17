@@ -38,6 +38,11 @@ function prune(schema, pruneOpts: PruneOpts) {
   })
 }
 
+prune.typesExcept = function(types) {
+  const aryTypes = Array(types)
+  return (type) => !(aryTypes.includes(type))
+}
+
 prune.fieldsExcept = function(pairs) {
   return (type, field) => {
     if (pairs[type]) {
