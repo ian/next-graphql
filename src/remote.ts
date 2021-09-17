@@ -16,10 +16,14 @@ type Opts = {
   prune?: PruneOpts
 }
 
+type WrappedGraphQLSchema = GraphQLSchema & {
+  originalSchema: GraphQLSchema
+}
+
 export default async function remote(
   url: string,
   opts: Opts = DEFAULT_OPTS
-): Promise<GraphQLSchema> {
+): Promise<WrappedGraphQLSchema> {
   const { headers: optsHeaders = {}, debug = false } = opts
   const headers = { "Content-Type": "application/json", ...optsHeaders }
 
@@ -54,10 +58,14 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
     transforms.push(pruneTransformer(opts.prune))
   }
 
-  return wrapSchema({
+  const wrapped =  wrapSchema({
     schema,
     executor, 
     transforms
-  })
+  }) as WrappedGraphQLSchema
+
+  wrapped.originalSchema = schema
+
+  return wrapped
 }
 
