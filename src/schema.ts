@@ -29,6 +29,7 @@ export async function buildSchema(opts: Config) {
   }
 
   const schema = stitch(subschemas, stitchableExtensions)
+  // const schema = subschemas[0]
   const schemaWithMiddleware = applyMiddleware(
     schema,
     // authMiddleware,
