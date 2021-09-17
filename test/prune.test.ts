@@ -1,5 +1,5 @@
 import testServer from "../.jest/server"
-import { remote, prune } from "../src"
+import { remote, helpers } from "../src"
 
 describe("#prune", () => {
   it("should allow type pruning", async () => {
@@ -7,7 +7,7 @@ describe("#prune", () => {
       schemas: {
         spacex: remote("https://api.spacex.land/graphql", {
           prune: {
-            types: prune.exceptTypes("Ship")
+            types: helpers.exceptTypes("Ship")
           }
         })
       }
@@ -22,7 +22,7 @@ describe("#prune", () => {
       schemas: {
         spacex: remote("https://api.spacex.land/graphql", {
           prune: {
-            fields: prune.exceptFields({
+            fields: helpers.exceptFields({
               "Ship": "name"
             })
           }

@@ -1,6 +1,7 @@
 import { delegateToSchema } from "@graphql-tools/delegate"
 
 type Opts = {
+  debug?: boolean
   args?: (object) => object
   context?: (object) => object
 }

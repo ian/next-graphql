@@ -11,46 +11,36 @@ export type PruneOpts = {
   args?: ArgPruner
 }
 
-function prune(schema, pruneOpts: PruneOpts) {
-  const { 
-    types: typeFilter,
-    fields: fieldFilter,
-    args: argumentFilter,
-  } = pruneOpts
+// function prune(schema, pruneOpts: PruneOpts) {
+//   return wrapSchema({
+//     schema,
+//     transforms: [new RemovePrivateElementsTransform()],
+//   })
+// }
 
-  class RemovePrivateElementsTransform {
-    transformSchema(originalWrappingSchema) {
-      return pruneSchema(
-        filterSchema({
-          schema: originalWrappingSchema,
-          typeFilter,
-          fieldFilter,
-          argumentFilter
-          // rootFieldFilter: (operationName, fieldName) => isPublicName(fieldName),
-        })
-      );
-    }
+class RemovePrivateElementsTransform {
+  typeFilter: TypePruner = null;
+  fieldFilter: FieldPruner = null
+  argumentFilter: ArgPruner = null
+
+  constructor(opts: PruneOpts) {
+    this.typeFilter = opts.types
+    this.fieldFilter = opts.types
   }
 
-  return wrapSchema({
-    schema,
-    transforms: [new RemovePrivateElementsTransform()],
-  })
-}
-
-prune.exceptTypes = function(types) {
-  const aryTypes = Array(types)
-  return (type) => !(aryTypes.includes(type))
-}
-
-prune.exceptFields = function(pairs) {
-  return (type, field) => {
-    if (pairs[type]) {
-      const fields = Array(pairs[type])
-      if (fields.includes(field)) return false
-    }
-    return true
+  transformSchema(originalWrappingSchema) {
+    return pruneSchema(
+      filterSchema({
+        schema: originalWrappingSchema,
+        typeFilter: this.typeFilter,
+        fieldFilter: this.fieldFilter,
+        argumentFilter: this.argumentFilter
+        // rootFieldFilter: (operationName, fieldName) => isPublicName(fieldName),
+      })
+    );
   }
 }
 
-export default prune
+export function pruneTransformer(opts: PruneOpts) {
+  return new RemovePrivateElementsTransform(opts)
+}
