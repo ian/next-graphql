@@ -9,6 +9,7 @@ const DEFAULT_OPTS = {
 }
 
 type Opts = {
+  debug?: boolean
   headers?: {
     [name: string]: string
   },
@@ -19,14 +20,14 @@ export default async function remote(
   url: string,
   opts: Opts = DEFAULT_OPTS
 ): Promise<SubschemaConfig> {
-  const { headers: optsHeaders = {} } = opts
+  const { headers: optsHeaders = {}, debug = false } = opts
   const headers = { "Content-Type": "application/json", ...optsHeaders }
 
   const executor = async opts => {
     const { document, variables } = opts
     const query = print(document)
 
-    if (process.env.NEXT_GRAPHQL_DEBUG) {
+    if (debug) {
       console.log(`
 POST to ${url}
 ${query}
@@ -40,7 +41,7 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
       body: JSON.stringify({ query, variables })
     }).then(res => res.json())
 
-    if (process.env.NEXT_GRAPHQL_DEBUG) {
+    if (debug) {
       console.log("JSON", JSON.stringify(json, null, 2))
     }
 
