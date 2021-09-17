@@ -1,6 +1,6 @@
+import _ from "lodash"
 import { applyMiddleware } from "graphql-middleware"
 
-// import { authMiddleware } from "./auth"
 import stitch from "./stitch"
 // import { shield } from "./guards"
 import { Config } from "./types"
@@ -16,10 +16,9 @@ export async function buildSchema(opts: Config) {
 
   extensions?.forEach(extension => {
     const extended = extension(schemas)
-    typeDefs.push(extended.typeDefs)
-    // deepmerge ?!?
-    Object.assign(resolvers, extended.resolvers)
-    Object.assign(guards, extended.guards)
+    if (extended.typeDefs) typeDefs.push(extended.typeDefs)
+    _.merge(resolvers, extended.resolvers)
+    _.merge(guards, extended.guards)
     if (extended.middleware) middleware.push(extended.middleware)
   })
 
@@ -29,10 +28,8 @@ export async function buildSchema(opts: Config) {
   }
 
   const schema = stitch(subschemas, stitchableExtensions)
-  // const schema = subschemas[0]
   const schemaWithMiddleware = applyMiddleware(
     schema,
-    // authMiddleware,
     // shield(guards),
     ...middleware.flat()
   )
