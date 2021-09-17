@@ -7,7 +7,7 @@ describe("#prune", () => {
       schemas: {
         spacex: remote("https://api.spacex.land/graphql", {
           prune: {
-            types: prune.typesExcept("Ship")
+            types: prune.exceptTypes("Ship")
           }
         })
       }
@@ -22,7 +22,7 @@ describe("#prune", () => {
       schemas: {
         spacex: remote("https://api.spacex.land/graphql", {
           prune: {
-            fields: prune.fieldsExcept({
+            fields: prune.exceptFields({
               "Ship": "name"
             })
           }
