@@ -18,9 +18,7 @@ async function testServer(config): Promise<TestServer> {
 
   return new Promise((resolve) => {
     return resolve({ server, schema, typeDefs, graphql })
-  }).finally(() => {
-    server.stop()
-  }) as Promise<TestServer>
+  })
 }
 
 export default testServer
