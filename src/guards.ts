@@ -1,21 +1,8 @@
 import { rule, shield } from "graphql-shield"
+import { Guards } from "./types"
 
-export const isAuthenticated = rule({ cache: "contextual" })(
-  async (parent, args, ctx, info) => {
-    return ctx.user !== null
-  }
-)
+export function guardsMiddleware(guards: Guards) {
+  return shield(guards)
+}
 
-export const isAdmin = rule({ cache: "contextual" })(
-  async (parent, args, ctx, info) => {
-    return ctx.user.role === "admin"
-  }
-)
-
-export const isEditor = rule({ cache: "contextual" })(
-  async (parent, args, ctx, info) => {
-    return ctx.user.role === "editor"
-  }
-)
-
-export { and, not, or, shield } from "graphql-shield"
+export { rule, and, not, or, shield } from "graphql-shield"

@@ -2,6 +2,12 @@ import { GraphQLSchema } from "graphql"
 import { ApolloServer } from "apollo-server-micro"
 import { Rule } from "graphql-shield/dist/rules"
 
+export type Guards = {
+  [type: string]: {
+    [object: string]: Rule
+  }
+}
+
 export type Middleware = (
   resolve: any,
   parent: any,
@@ -16,11 +22,7 @@ export type Extension = {
     [key: string]: any
   }
   middleware?: Middleware | Middleware[]
-  guards?: {
-    [type: string]: {
-      [object: string]: Rule
-    }
-  }
+  guards?: Guards
 }
 
 export type Schemas = {
@@ -35,7 +37,9 @@ export type CodegenConfig = {
 
 export type Config = {
   schemas?: Schemas
-  extensions?: ((schemas: Schemas) => Extension)[]
+  extensions?: ((schemas: Schemas) => Extension)[],
+  middleware?: Middleware | Middleware[]
+  guards?: Guards
   // codegen?: CodegenConfig
 }
 
