@@ -2,4 +2,5 @@
 
 yarn dist
 npm version patch
-npm publish
+cp package.json README.md ./dist
+(cd ./dist && npm publish)
