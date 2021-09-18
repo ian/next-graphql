@@ -3,6 +3,7 @@
   "include": ["./src"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
+    "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",
     "target": "es5",
@@ -15,8 +16,14 @@
     "declaration": true,
     "sourceMap": true,
     "lib": ["es6", "DOM"],
+    "paths": {
+      "types": ["./types"],
+      "next-graphql": ["./src/server"],
+      "next-graphql/client": ["./src/client"],
+      "next-graphql/guards": ["./src/guards"]
+    },
     
-    // "baseUrl": ".",
+    
     // // "module": "esnext",
     // "lib": ["dom", "dom.iterable", "esnext"],
     // "importHelpers": true,
