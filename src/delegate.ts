@@ -2,7 +2,7 @@ import { delegateToSchema } from "@graphql-tools/delegate"
 
 type Opts = {
   debug?: boolean
-  args?: (object) => object
+  args?: (args:object, context:object) => object
   context?: (object) => object
 }
 
@@ -15,7 +15,7 @@ export default function delegate(schema, opts: Opts = {}) {
       schema,
       operation,
       fieldName,
-      args: opts.args ? opts.args(args) : args,
+      args: opts.args ? opts.args(args, context) : args,
       context: opts.context ? opts.context(context) : context,
       info,
     }
