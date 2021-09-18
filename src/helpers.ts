@@ -1,4 +1,4 @@
-export function exceptTypes(types) {
+export function exceptTypes(...types) {
   const aryTypes = Array(types)
   return (type) => !(aryTypes.includes(type))
 }

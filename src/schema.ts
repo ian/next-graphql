@@ -30,6 +30,8 @@ export async function buildSchema(opts: Config) {
     resolvers
   }
 
+  // console.log({guards})
+
   const schema = stitch(Object.values(subschemas), stitchableExtensions)
   const schemaWithMiddleware = applyMiddleware(
     schema,
