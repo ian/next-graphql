@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./client": "./dist/client.js"
+    "./client": "./dist/client.js",
+    "./guards": "./dist/guards.js"
   },
   "files": [
     "dist/**/*"
