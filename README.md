@@ -61,35 +61,39 @@ export default makeSchema({
 })
 ```
 
-### Remote Schemas
+For a more complete examples, see [examples](./examples)
 
-`@todo`
+## Remote Schemas
+
+Basic remote schema (via [SpaceX GraphQL](https://api.spacex.land/graphql)):
 
 ```
-// ./graphql/server/config.ts
-
 import { nextHandler, remote } from "next-graphql"
 
-export const handler = () => {
-  return nextHandler({
-    schemas: {
-      graphcms: remote(process.env.GRAPHCMS_URL, {
-        headers: {
-          Authorization: "Bearer " + process.env.GRAPHCMS_TOKEN,
-        },
-      }),
-    },
-  })
-}
-
+export default nextHandler({
+  schemas: {
+    spacex: remote("https://api.spacex.land/graphql/"),
+  },
+})
 ```
 
-## Schema Configuration
+With custom headers/authentication (with [GraphCMS](https://graphcms.com)):
 
-`@todo`
+```
+import { nextHandler, remote } from "next-graphql"
 
+export default nextHandler({
+  schemas: {
+    graphcms: remote(process.env.GRAPHCMS_URL, {
+      headers: {
+        Authorization: "Bearer " + process.env.GRAPHCMS_TOKEN,
+      },
+    }),
+  },
+})
+```
 
-# Project Structure
+<!-- # Project Structure
 
 The `init` command will add the following to to your project structure:
 
@@ -163,4 +167,4 @@ export const config = {
 }
 
 export default handler()
-```
+``` -->

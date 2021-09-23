@@ -7,10 +7,8 @@ export const config = {
   },
 }
 
-const graphqlConfig = {
+export default nextHandler({
   schemas: {
     nexus,
   },
-}
-
-export default nextHandler(graphqlConfig)
+})
