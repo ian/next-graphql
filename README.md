@@ -2,39 +2,64 @@
 
 # Overview
 
-GraphQL for Next.js
-
-# Introduction
-
-NextGraphQL.js is a zero-config [GraphQL](https://graphql.org) server for [Next.js](https://nextjs.org/), designed to run as a serverless function or standalone server.
-
-It supports a lot of extras right out of the box:
-- schema stitching and merging
-- authentication + NextAuth support
-- automatic code generation
-- RBAC + guards
-- ... and more!
-
-<!-- We were lovingly inspired by the simplicity of [next-auth](https://github.com/nextauthjs/next-auth) and [next-crud](https://github.com/roldanjr/next-crud) -->
-
-# Quickstart
-
-Run `npx next-graphql init` in the base Next.js project folder.
-
-Then, open http://localhost:3000/api/graphql. That's it.
-
+NextGraphQL.js is a zero-config [GraphQL](https://graphql.org) server for [Next.js](https://nextjs.org/), designed specifically to be run in a Next.js and Serverless environment.
 
 # Getting Started
 
-`@todo`
+From your main Next.js project path run:
 
-## Adding Queries and Mutations
+```
+npx next-graphql init
+```
 
-`@todo`
+Then, open http://localhost:3000/api/graphql. 
 
-## Schema Configuration
+<!-- We were lovingly inspired by the simplicity of [next-auth](https://github.com/nextauthjs/next-auth) and [next-crud](https://github.com/roldanjr/next-crud) -->
 
-`@todo`
+# Examples
+
+## Nexus
+
+`pages/api/graphql.ts`
+
+```
+import { nextHandler } from "next-graphql"
+import nexus from "../../api/nexus"
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+export default nextHandler({
+  schemas: {
+    nexus,
+  },
+})
+```
+
+`graphql/nexus.ts`
+
+```
+import { extendType, objectType, makeSchema } from "nexus"
+
+export const Query = extendType({
+  type: "Query",
+  definition(t) {
+    t.field("hello", {
+      type: "String",
+      resolve() {
+        return "Hello, world"
+      },
+    })
+  },
+})
+
+export default makeSchema({
+  types: [Query],
+})
+```
 
 ### Remote Schemas
 
@@ -58,6 +83,11 @@ export const handler = () => {
 }
 
 ```
+
+## Schema Configuration
+
+`@todo`
+
 
 # Project Structure
 

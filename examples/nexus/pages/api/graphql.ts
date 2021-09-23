@@ -1,5 +1,5 @@
 import { nextHandler } from "next-graphql"
-import nexus from "../../api/nexus"
+import nexus from "../../graphql/nexus"
 
 export const config = {
   api: {
