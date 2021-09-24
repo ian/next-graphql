@@ -18,9 +18,10 @@ Then, open http://localhost:3000/api/graphql.
 
 # Features
 
+- Easily add any number of GraphQLSchemas together.
 - Built-in support for [NextAuth](https://github.com/nextauthjs/next-auth)
 - Schema merging + stitching
-- Remote schemas
+- Remote schemas + pruning
 - Extensions
 - Guards on Endpoints + Properties
 - ... and more soon, let us know what features you need!
@@ -29,11 +30,13 @@ Then, open http://localhost:3000/api/graphql.
 
 ## Nexus
 
-`pages/api/graphql.ts`
+It's really easy to build a schema using Nexus and NextGraphQL:
 
-```
-import { nextHandler } from "next-graphql"
-import nexus from "../../api/nexus"
+```ts
+// pages/api/graphql.ts
+
+import { extendType, objectType, makeSchema } from "nexus"
+import { handler as nextGraphQLHandler } from "next-graphql"
 
 export const config = {
   api: {
@@ -41,19 +44,7 @@ export const config = {
   },
 }
 
-export default nextHandler({
-  schemas: {
-    nexus,
-  },
-})
-```
-
-`graphql/nexus.ts`
-
-```
-import { extendType, objectType, makeSchema } from "nexus"
-
-export const Query = extendType({
+const Query = extendType({
   type: "Query",
   definition(t) {
     t.field("hello", {
@@ -65,30 +56,135 @@ export const Query = extendType({
   },
 })
 
-export default makeSchema({
+const nexus = makeSchema({
   types: [Query],
+})
+
+export default nextGraphQLHandler({
+  schemas: {
+    nexus,
+  },
 })
 ```
 
-For a more complete examples, see [examples/nexus](./examples/nexus)
+For a complete example, see [examples/nexus](./examples/nexus).
+
+## NextAuth
+
+One of the main motivations behind this project was to provide a more integrated experience with GraphQL and Authentication. 
+
+Most BaaS services provide some sort of authentication capabilities but having deep auth integration with your project is beneficial.
+
+Adding [NextAuth](https://github.com/nextauthjs/next-auth) is a few lines of code.
+
+```ts
+// pages/api/graphql.ts
+
+import { getSession } from "next-auth/client" 
+import { handler as nextGraphQLHandler } from "next-graphql"
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+export default nextGraphQLHandler({
+  session: ({ req }) => getSession({ req })
+  schemas: {
+    // ...
+  }
+})
+```
+
+This will add a `{session}` object to the resolver context.
+
+### Authentication Guards
+
+You can easily guard content:
+
+```ts
+
+// pages/api/graphql.ts
+
+import { getSession } from "next-auth/client"
+import { handler as nextGraphQLHandler } from "next-graphql"
+import { isAuthenticated } from "next-graphql/auth"
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+export default nextGraphQLHandler({
+  session: ({ req }) => getSession({ req })
+  schemas: {
+    // ...
+  },
+  guards: {
+    Query: {
+      myQuery: isAuthenticated
+    }
+  }
+})
+```
 
 ## Remote Schemas
 
-### Basic remote schema
+Remote schemas are a first-class citizen in NextGraphQL. By default all schemas are merged and stitched together creating a primary, "gateway" schema.
 
 For a full working remote example, see see [examples/remote](./examples/remote)
 
+### Basic remote schema
+
 This will add the [SpaceX GraphQL](https://api.spacex.land/graphql) endpoints:
 
-`pages/api/graphql.ts`
+```ts
+// pages/api/graphql.ts
+import { handler as nextGraphQLHandler, remote } from "next-graphql"
 
-```
-import { nextHandler, remote } from "next-graphql"
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
 
-export default nextHandler({
+export default nextGraphQLHandler({
   schemas: {
     spacex: remote("https://api.spacex.land/graphql"),
   },
+})
+```
+
+### Guarding remote schema endpoints
+
+Now suppose that you want to guard some of the endpoints in the remote schema:
+
+```ts
+// pages/api/graphql.ts
+
+import { handler as nextGraphQLHandler, remote } from "next-graphql"
+
+const isAuthenticated = rule()(async (parent, args, ctx, info) => {
+  return ctx.session ? true : new Error("Must be logged in")
+})
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+export default nextGraphQLHandler({
+  schemas: {
+    spacex: remote("https://api.spacex.land/graphql"),
+  },
+  guards: {
+    Query: {
+      ships: isAuthenticated
+    }
+  }
 })
 ```
 
@@ -96,12 +192,18 @@ export default nextHandler({
 
 Suppose you want to add an authorized endpoint, i.e. [GraphCMS](https://graphcms.com):
 
-`pages/api/graphql.ts`
+```ts
+// pages/api/graphql.ts
 
-```
-import { nextHandler, remote } from "next-graphql"
+import { handler as nextGraphQLHandler, remote } from "next-graphql"
 
-export default nextHandler({
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+export default nextGraphQLHandler({
   schemas: {
     graphcms: remote(process.env.GRAPHCMS_URL, {
       headers: {
@@ -111,6 +213,92 @@ export default nextHandler({
   },
 })
 ```
+
+### Pruning remote schemas
+
+Sometimes we want to alter the upstream schema. This removes all references to Ship, which will also prune the final schema removing all unused types from the gateway schema.
+
+```ts
+// pages/api/graphql.ts
+
+import { handler as nextGraphQLHandler, remote } from "next-graphql"
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+export default nextGraphQLHandler({
+  schemas: {
+    spacex: remote("https://api.spacex.land/graphql", {
+      prune: {
+        types: (type) => !type.match(/Ship/),
+      },
+    }),
+  },
+})
+```
+
+# Extensions
+
+NextGraphQL supports an Extension format to make it easy for submodule development:
+
+```ts
+// pages/api/graphql.ts
+
+import { handler as nextGraphQLHandler, remote } from "next-graphql"
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+const customExtender = {
+  resolvers: {
+    Query: {
+      ships: async (obj, args, context) => {
+        return getDataFromOtherSource() // custom override resolver
+      }
+    }
+  }
+}
+
+export default nextGraphQLHandler({
+  schemas: {
+    spacex: remote("https://api.spacex.land/graphql"),
+  },
+  extensions: [customExtender]
+})
+```
+
+Extensions support the following options:
+
+```ts
+export type Extension = {
+  typeDefs?: string
+  resolvers?: {
+    [key: string]: any
+  }
+  middleware?: Middleware | Middleware[]
+  guards?: Guards
+}
+```
+
+# Acknowledgements
+
+NextGraphQL is a new project but we're super grateful to all our contributors as we expand and built out the project.
+
+<a href="https://github.com/ian/next-graphql/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ian/next-graphql" />
+</a>
+
+We'd also like to make a massive shoutout to [the Guild](https://the-guild.dev/) team for their contributions to GraphQL, without which this project wouldn't exist.
+
+# License
+
+MIT
 
 <!-- # Project Structure
 

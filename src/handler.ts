@@ -1,7 +1,7 @@
 import { Config } from "./types"
 import { buildServer } from "./server"
 
-export default function nextGraphQL(config: Config = {}) {
+function handler(config: Config = {}) {
   const { schemas, extensions = [] } = config
 
   return async function handler(req, res) {
@@ -17,3 +17,5 @@ export default function nextGraphQL(config: Config = {}) {
     }
   }
 }
+
+export default handler
