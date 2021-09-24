@@ -16,6 +16,15 @@ Then, open http://localhost:3000/api/graphql.
 
 <!-- We were lovingly inspired by the simplicity of [next-auth](https://github.com/nextauthjs/next-auth) and [next-crud](https://github.com/roldanjr/next-crud) -->
 
+# Features
+
+- Built-in support for [NextAuth](https://github.com/nextauthjs/next-auth)
+- Schema merging + stitching
+- Remote schemas
+- Extensions
+- Guards on Endpoints + Properties
+- ... and more soon, let us know what features you need!
+
 # Examples
 
 ## Nexus
@@ -65,19 +74,27 @@ For a more complete examples, see [examples](./examples)
 
 ## Remote Schemas
 
-Basic remote schema (via [SpaceX GraphQL](https://api.spacex.land/graphql)):
+### Basic remote schema
+
+This will add the [SpaceX GraphQL](https://api.spacex.land/graphql) endpoints:
+
+`pages/api/graphql.ts`
 
 ```
 import { nextHandler, remote } from "next-graphql"
 
 export default nextHandler({
   schemas: {
-    spacex: remote("https://api.spacex.land/graphql/"),
+    spacex: remote("https://api.spacex.land/graphql"),
   },
 })
 ```
 
-With custom headers/authentication (with [GraphCMS](https://graphcms.com)):
+### Custom headers/authentication
+
+Suppose you want to add an authorized endpoint, i.e. [GraphCMS](https://graphcms.com):
+
+`pages/api/graphql.ts`
 
 ```
 import { nextHandler, remote } from "next-graphql"
