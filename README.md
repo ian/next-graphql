@@ -1,6 +1,6 @@
 # Overview
 
-NextGraphQL.js is a zero-config [GraphQL](https://graphql.org) server for [Next.js](https://nextjs.org/), designed specifically to be run in a Next.js and Serverless environment.
+NextGraphQL.js is a zero-config [GraphQL](https://graphql.org) server for [Next.js](https://nextjs.org/), supporting Vercel Serverless environment runtime.
 
 # Getting Started
 
@@ -163,9 +163,10 @@ Now suppose that you want to guard some of the endpoints in the remote schema:
 // pages/api/graphql.ts
 
 import { handler as nextGraphQLHandler, remote } from "next-graphql"
+import { rule } from "next-graphql/guards"
 
-const isAuthenticated = rule()(async (parent, args, ctx, info) => {
-  return ctx.session ? true : new Error("Must be logged in")
+const fiftyPercentFailWithError = rule()(async (parent, args, ctx, info) => {
+  return Math.floor(Math.random() * 100) % 2 === 0 ? true : new Error("You were randomly selected to have this endpoint fail.")
 })
 
 export const config = {
@@ -180,7 +181,7 @@ export default nextGraphQLHandler({
   },
   guards: {
     Query: {
-      ships: isAuthenticated
+      ships: fiftyPercentFailWithError
     }
   }
 })
