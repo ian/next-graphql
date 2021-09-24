@@ -70,11 +70,13 @@ export default makeSchema({
 })
 ```
 
-For a more complete examples, see [examples](./examples)
+For a more complete examples, see [examples/nexus](./examples/nexus)
 
 ## Remote Schemas
 
 ### Basic remote schema
+
+For a full working remote example, see see [examples/remote](./examples/remote)
 
 This will add the [SpaceX GraphQL](https://api.spacex.land/graphql) endpoints:
 
