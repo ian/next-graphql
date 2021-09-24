@@ -1,5 +1,3 @@
-> NOTE - next-graphql is still in alpha and not suitable for production environments yet.
-
 # Overview
 
 NextGraphQL.js is a zero-config [GraphQL](https://graphql.org) server for [Next.js](https://nextjs.org/), designed specifically to be run in a Next.js and Serverless environment.
