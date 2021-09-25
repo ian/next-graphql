@@ -8,7 +8,13 @@ export async function buildServer(config: Config): Promise<Server> {
     schema,
     logger: console,
     introspection: true,
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => {
+      const context = { req, res }
+      if (config.session) {
+        Object.assign(context, { session: config.session({ req }) })
+      }
+      return context
+    },
     stopOnTerminationSignals: true,
     // introspection: process.env.NODE_ENV === "development"
   })

@@ -14,6 +14,8 @@ export async function buildSchema(opts: Config) {
   const middleware = []
   const guards = {}
 
+  middleware.push(guardsMiddleware(guards))
+
   if (optsGuards) _.merge(guards, optsGuards)
   if (optsMiddleware) middleware.push(optsMiddleware)
 
@@ -24,8 +26,6 @@ export async function buildSchema(opts: Config) {
     if (extended.guards) _.merge(guards, extended.guards)
     if (extended.middleware) middleware.push(extended.middleware)
   })
-
-  middleware.push(guardsMiddleware(guards))
 
   const stitchableExtensions = {
     typeDefs: typeDefs.join("\n"),
