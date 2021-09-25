@@ -1,5 +1,5 @@
 export function exceptTypes(...types) {
-  const aryTypes = Array(types)
+  const aryTypes = Array(types).flat()
   return (type) => !(aryTypes.includes(type))
 }
 

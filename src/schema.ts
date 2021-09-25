@@ -25,17 +25,16 @@ export async function buildSchema(opts: Config) {
     if (extended.middleware) middleware.push(extended.middleware)
   })
 
+  middleware.push(guardsMiddleware(guards))
+
   const stitchableExtensions = {
     typeDefs: typeDefs.join("\n"),
     resolvers
   }
 
-  // console.log({guards})
-
   const schema = stitch(Object.values(subschemas), stitchableExtensions)
   const schemaWithMiddleware = applyMiddleware(
     schema,
-    guardsMiddleware(guards),
     ...middleware.flat()
   )
 

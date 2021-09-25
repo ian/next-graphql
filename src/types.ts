@@ -36,9 +36,10 @@ export type CodegenConfig = {
 }
 
 export type Config = {
+  session?: any
   schemas?: Schemas
   extensions?: ((schemas: Schemas) => Extension)[],
-  middleware?: Middleware | Middleware[]
+  middleware?: Middleware[]
   guards?: Guards
   // codegen?: CodegenConfig
 }
