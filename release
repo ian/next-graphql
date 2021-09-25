@@ -1,6 +1,8 @@
 #!/bin/bash
 
+BUMP="${1:=patch}"
+
 yarn dist
-npm version patch
+npm version $BUMP
 cp package.json README.md ./dist
 (cd ./dist && npm publish)
