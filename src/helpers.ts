@@ -6,7 +6,7 @@ export function exceptTypes(...types) {
 export function exceptFields(pairs) {
   return (type, field) => {
     if (pairs[type]) {
-      const fields = Array(pairs[type])
+      const fields = Array(pairs[type]).flat()
       if (fields.includes(field)) return false
     }
     return true
