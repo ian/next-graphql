@@ -1,8 +1,7 @@
 #!/bin/bash
 
-BUMP="${1:=patch}"
+defaultBump=patch
+BUMP=${1:-$defaultBump} 
 
 yarn dist
-npm version $BUMP
-cp package.json README.md ./dist
-(cd ./dist && npm publish)
+npm version $BUMP && cp package.json README.md ./dist && (cd ./dist && npm publish)
