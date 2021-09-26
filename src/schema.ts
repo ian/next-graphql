@@ -6,20 +6,23 @@ import { Config } from "./types"
 import { guardsMiddleware } from "./guards"
 
 export async function buildSchema(opts: Config) {
-  const { schemas, extensions, guards: optsGuards, middleware: optsMiddleware } = opts
+  const {
+    schemas,
+    extensions,
+    guards: optsGuards,
+    middleware: optsMiddleware,
+  } = opts
   const subschemas = await allPromiseValues(schemas)
-  
+
   const typeDefs = []
   const resolvers = {}
   const middleware = []
   const guards = {}
-
-  middleware.push(guardsMiddleware(guards))
-
+  
   if (optsGuards) _.merge(guards, optsGuards)
   if (optsMiddleware) middleware.push(optsMiddleware)
 
-  extensions?.forEach(extension => {
+  extensions?.forEach((extension) => {
     const extended = extension(subschemas)
     if (extended.typeDefs) typeDefs.push(extended.typeDefs)
     if (extended.resolvers) _.merge(resolvers, extended.resolvers)
@@ -27,16 +30,15 @@ export async function buildSchema(opts: Config) {
     if (extended.middleware) middleware.push(extended.middleware)
   })
 
+  middleware.push(guardsMiddleware(guards))
+  
   const stitchableExtensions = {
     typeDefs: typeDefs.join("\n"),
-    resolvers
+    resolvers,
   }
 
   const schema = stitch(Object.values(subschemas), stitchableExtensions)
-  const schemaWithMiddleware = applyMiddleware(
-    schema,
-    ...middleware.flat()
-  )
+  const schemaWithMiddleware = applyMiddleware(schema, ...middleware.flat())
 
   return schemaWithMiddleware
 }
