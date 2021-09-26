@@ -8,10 +8,10 @@ export async function buildServer(config: Config): Promise<Server> {
     schema,
     logger: console,
     introspection: true,
-    context: ({ req, res }) => {
+    context: async ({ req, res }) => {
       const context = { req, res }
       if (config.session) {
-        Object.assign(context, { session: config.session({ req }) })
+        Object.assign(context, { session: await config.session({ req }) })
       }
       return context
     },

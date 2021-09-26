@@ -1,6 +1,5 @@
 import { Config } from "./types"
 import { buildServer } from "./server"
-import { addSessionToContext } from "./middleware"
 
 function handler(config: Config = {}) {
   return async function handler(req, res) {

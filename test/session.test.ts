@@ -2,7 +2,9 @@ import testServer from "../.jest/server"
 
 describe("#session", () => {
   it("should allow guarded endpoints", async () => {
-    const session = jest.fn(() => "SESSION OBJECT")
+    const session = jest.fn(async () => {
+      return "SESSION OBJECT"
+    })
     const { graphql } = await server(session)
 
     const { errors, data } = await graphql(`
@@ -43,3 +45,4 @@ const server = (session) => {
     ],
   })
 }
+
