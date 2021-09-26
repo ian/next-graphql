@@ -1,6 +1,6 @@
 {
   "name": "next-graphql",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "GraphQL for Next.js",
   "main": "index.js",
   "types": "index.d.ts",
