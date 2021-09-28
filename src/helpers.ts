@@ -29,7 +29,7 @@ export function onlyFields(pairs) {
 }
 
 function matches(name, allowed) {
-  return _.find(allowed, match => {
+  return _.find(allowed, (match) => {
     return !!name.match(`^${match}$`)
   })
 }

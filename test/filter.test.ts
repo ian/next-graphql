@@ -116,7 +116,7 @@ describe("#onlyTypes", () => {
 })
 
 describe("onlyFields", () => {
-  it.only("include all fields except filtered", async () => {
+  it("include all fields except filtered", async () => {
     const spacex = await remote("https://api.spacex.land/graphql", {
       filter: {
         fields: helpers.onlyFields({
@@ -125,8 +125,6 @@ describe("onlyFields", () => {
       },
     })
 
-    console.log(printSchema(spacex))
-
     const schema = await testServer({
       schemas: {
         spacex,
@@ -134,8 +132,9 @@ describe("onlyFields", () => {
     }).then(({ schema }) => schema)
 
     const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
+    const schemaKeys = Object.keys(fieldsFor(schema))
 
-    expect(Object.keys(fieldsFor(schema))).not.toContain("name")
+    expect(schemaKeys).toEqual(["name"])
     // smoke test
     expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
   })

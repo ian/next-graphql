@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { applyMiddleware } from "graphql-middleware"
 
-import stitch from "./stitch"
+import stitch from "./transform"
 import { Config } from "./types"
 import { guardsMiddleware } from "./guards"
 
@@ -18,7 +18,7 @@ export async function buildSchema(opts: Config) {
   const resolvers = {}
   const middleware = []
   const guards = {}
-  
+
   if (optsGuards) _.merge(guards, optsGuards)
   if (optsMiddleware) middleware.push(optsMiddleware)
 
@@ -31,7 +31,7 @@ export async function buildSchema(opts: Config) {
   })
 
   middleware.push(guardsMiddleware(guards))
-  
+
   const stitchableExtensions = {
     typeDefs: typeDefs.join("\n"),
     resolvers,
