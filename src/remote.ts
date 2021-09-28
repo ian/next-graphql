@@ -1,19 +1,19 @@
-import { GraphQLSchema } from "graphql"
 import { fetch } from "cross-fetch"
+import { GraphQLSchema } from "graphql"
 import { print } from "graphql"
 import { introspectSchema, wrapSchema } from "@graphql-tools/wrap"
-import { pruneTransformer, PruneOpts } from "./prune"
+import { prune, filter, FilterOpts } from "./transform"
 
 const DEFAULT_OPTS = {
-  headers: {}
+  headers: {},
 }
 
 type Opts = {
   debug?: boolean
   headers?: {
     [name: string]: string
-  },
-  prune?: PruneOpts
+  }
+  filter?: FilterOpts
 }
 
 type WrappedGraphQLSchema = GraphQLSchema & {
@@ -27,7 +27,7 @@ export default async function remote(
   const { headers: optsHeaders = {}, debug = false } = opts
   const headers = { "Content-Type": "application/json", ...optsHeaders }
 
-  const executor = async opts => {
+  const executor = async (opts) => {
     const { document, variables } = opts
     const query = print(document)
 
@@ -35,15 +35,17 @@ export default async function remote(
       console.log(`
 POST to ${url}
 ${query}
-${variables ? JSON.stringify(variables, null, 2): ""}
+${variables ? JSON.stringify(variables, null, 2) : ""}
 `)
     }
 
     const json = await fetch(url, {
       method: "POST",
       headers,
-      body: JSON.stringify({ query, variables })
-    }).then(res => res.json())
+      body: JSON.stringify({ query, variables }),
+    })
+      .then((res) => res.json())
+      .catch(console.error)
 
     if (debug) {
       console.log("JSON", JSON.stringify(json, null, 2))
@@ -52,23 +54,25 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
     return json
   }
 
-  const transforms = []
-  const schema = await introspectSchema(executor)
-  if (opts.prune) {
-    transforms.push(pruneTransformer(opts.prune))
-  }
-
-  const wrapped = wrapSchema({
-    schema,
-    executor, 
-    transforms
+  const introspected = await introspectSchema(executor)
+  const originalSchema = wrapSchema({
+    schema: introspected,
+    executor,
   }) as WrappedGraphQLSchema
 
-  wrapped.originalSchema = wrapSchema({
-    schema,
-    executor, 
-  })
+  let schema
 
-  return wrapped
+  if (opts.filter) {
+    // This is super annoying, but this requires a double prune.
+    // Otherwise, we end up with dangling subscription / mutations with no properties
+    schema = prune(
+      prune(filter(originalSchema, opts.filter))
+    ) as WrappedGraphQLSchema
+  } else {
+    schema = originalSchema
+  }
+
+  schema.originalSchema = originalSchema
+
+  return schema
 }
-

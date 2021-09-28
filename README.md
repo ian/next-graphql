@@ -213,14 +213,14 @@ export default nextGraphQLHandler({
 })
 ```
 
-### Pruning remote schemas
+### Filtering remote schemas
 
-Sometimes we want to alter the upstream schema. This removes all references to Ship, which will also prune the final schema removing all unused types from the gateway schema.
+Sometimes we want to alter the upstream schema. This removes all references to Ship, which will also filter and prune the final schema removing all unused types from the gateway schema.
 
 ```ts
 // pages/api/graphql.ts
 
-import { handler as nextGraphQLHandler, remote } from "next-graphql"
+import { handler as nextGraphQLHandler, remote, helpers } from "next-graphql"
 
 export const config = {
   api: {
@@ -231,8 +231,8 @@ export const config = {
 export default nextGraphQLHandler({
   schemas: {
     spacex: remote("https://api.spacex.land/graphql", {
-      prune: {
-        types: (type) => !type.match(/Ship/),
+      filter: {
+        types: helpers.onlyTypes("Ship"),
       },
     }),
   },
