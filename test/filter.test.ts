@@ -1,5 +1,3 @@
-import { formatSdl } from "format-graphql"
-import { printSchema } from "graphql"
 import testServer from "../.jest/server"
 import { remote, helpers } from "../src"
 

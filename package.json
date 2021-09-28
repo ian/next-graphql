@@ -31,7 +31,6 @@
     "@types/jest": "^27.0.1",
     "@types/react": "^17.0.19",
     "boxen": "^5.0.1",
-    "format-graphql": "^1.4.0",
     "jest": "^27.2.0",
     "nodemon": "^2.0.12",
     "ts-jest": "^27.0.5",
