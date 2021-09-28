@@ -12,3 +12,11 @@ export function exceptFields(pairs) {
     return true
   }
 }
+
+export function onlyTypes(...types) {
+  const aryTypes = Array(types).flat()
+  return (type) => {
+    const included = aryTypes.includes(type)
+    return included
+  }
+}

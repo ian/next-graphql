@@ -5,7 +5,7 @@ type TypePruner = (typeName:string) => boolean
 type FieldPruner = (typeName:string, fieldName: string) => boolean
 type ArgPruner = (typeName:string, fieldName: string, argName: string) => boolean
 
-export type PruneOpts = {
+export type FilterOpts = {
   types?: TypePruner
   fields?: FieldPruner
   args?: ArgPruner
@@ -23,7 +23,7 @@ class RemovePrivateElementsTransform {
   fieldFilter: FieldPruner = null
   argumentFilter: ArgPruner = null
 
-  constructor(opts: PruneOpts) {
+  constructor(opts: FilterOpts) {
     this.typeFilter = opts.types
     this.fieldFilter = opts.fields
     this.argumentFilter = opts.args
@@ -42,6 +42,6 @@ class RemovePrivateElementsTransform {
   }
 }
 
-export function pruneTransformer(opts: PruneOpts) {
+export function pruneTransformer(opts: FilterOpts) {
   return new RemovePrivateElementsTransform(opts)
 }

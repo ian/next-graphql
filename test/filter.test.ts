@@ -1,14 +1,16 @@
+import {formatSdl} from 'format-graphql';
+import { printSchema } from 'graphql';
 import testServer from "../.jest/server"
 import { remote, helpers } from "../src"
 
-describe("#prune", () => {
-  it("should allow type pruning", async () => {
+describe("#exceptTypes", () => {
+  it("include all types except the filtered", async () => {
     const schema = await testServer({
       schemas: {
         spacex: remote("https://api.spacex.land/graphql", {
-          prune: {
+          filter: {
             types: helpers.exceptTypes("Ship")
-          }
+          },
         })
       }
     }).then(({ schema }) => schema)
@@ -16,10 +18,12 @@ describe("#prune", () => {
     const typeMap = Object.keys(schema.getTypeMap())
     expect(typeMap).not.toContain("Ship")
   })
+})
 
-  it("should allow field pruning", async () => {
+describe("exceptFields", () => {
+  it("include all fields except filtered", async () => {
     const spacex = await remote("https://api.spacex.land/graphql", {
-      prune: {
+      filter: {
         fields: helpers.exceptFields({
           "Ship": "name"
         })
@@ -36,5 +40,25 @@ describe("#prune", () => {
 
     expect(Object.keys(fieldsFor(schema))).not.toContain("name")
     expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
+  })
+})
+
+describe("#onlyTypes", () => {
+  it.only("should only inlucde the type", async () => {
+    const spacex = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        types: helpers.onlyTypes("String","Ship")
+      },
+    })
+    
+    const schema = await testServer({
+      schemas: {
+        spacex
+      }
+    }).then(({ schema }) => schema)
+
+    const typeMap = Object.keys(schema.getTypeMap())
+    expect(typeMap).toContain("Ship")
+    expect(typeMap).not.toContain("ShipMission")
   })
 })

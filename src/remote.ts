@@ -1,8 +1,8 @@
-import { GraphQLSchema } from "graphql"
 import { fetch } from "cross-fetch"
+import { GraphQLSchema, printSchema } from "graphql"
 import { print } from "graphql"
 import { introspectSchema, wrapSchema } from "@graphql-tools/wrap"
-import { pruneTransformer, PruneOpts } from "./prune"
+import { pruneTransformer, FilterOpts } from "./prune"
 
 const DEFAULT_OPTS = {
   headers: {}
@@ -13,7 +13,7 @@ type Opts = {
   headers?: {
     [name: string]: string
   },
-  prune?: PruneOpts
+  filter?: FilterOpts
 }
 
 type WrappedGraphQLSchema = GraphQLSchema & {
@@ -43,7 +43,10 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
       method: "POST",
       headers,
       body: JSON.stringify({ query, variables })
-    }).then(res => res.json())
+    }).then(res => res.json()).catch(err => {
+      console.error(err)
+      process.exit()
+    })
 
     if (debug) {
       console.log("JSON", JSON.stringify(json, null, 2))
@@ -54,8 +57,8 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
 
   const transforms = []
   const schema = await introspectSchema(executor)
-  if (opts.prune) {
-    transforms.push(pruneTransformer(opts.prune))
+  if (opts.filter) {
+    transforms.push(pruneTransformer(opts.filter))
   }
 
   const wrapped = wrapSchema({
