@@ -14,6 +14,7 @@ type Opts = {
     [name: string]: string
   }
   filter?: FilterOpts
+  prune?: boolean
 }
 
 type WrappedGraphQLSchema = GraphQLSchema & {
@@ -24,7 +25,12 @@ export default async function remote(
   url: string,
   opts: Opts = DEFAULT_OPTS
 ): Promise<WrappedGraphQLSchema> {
-  const { headers: optsHeaders = {}, debug = false } = opts
+  const {
+    headers: optsHeaders = {},
+    filter: optsFilter,
+    prune: optsPrune = true,
+    debug = false,
+  } = opts
   const headers = { "Content-Type": "application/json", ...optsHeaders }
 
   const executor = async (opts) => {
@@ -62,14 +68,16 @@ ${variables ? JSON.stringify(variables, null, 2) : ""}
 
   let schema
 
-  if (opts.filter) {
-    // This is super annoying, but this requires a double prune.
-    // Otherwise, we end up with dangling subscription / mutations with no properties
-    schema = prune(
-      prune(filter(originalSchema, opts.filter))
-    ) as WrappedGraphQLSchema
+  if (optsFilter) {
+    schema = filter(originalSchema, optsFilter)
   } else {
     schema = originalSchema
+  }
+
+  if (optsPrune) {
+    // This is super annoying, but this requires a double prune.
+    // Otherwise, we end up with dangling subscription / mutations with no properties
+    schema = prune(prune(schema)) as WrappedGraphQLSchema
   }
 
   schema.originalSchema = originalSchema
