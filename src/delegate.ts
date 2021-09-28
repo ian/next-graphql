@@ -2,14 +2,16 @@ import { delegateToSchema } from "@graphql-tools/delegate"
 
 type Opts = {
   debug?: boolean
-  args?: (args:object, context:object) => object
+  args?: (args: object, context: object) => object
   context?: (object) => object
+  operation?: "query" | "mutation" | "subscription"
+  fieldName?: string
 }
 
 export default function delegate(schema, opts: Opts = {}) {
   return async (obj, args, context, info) => {
-    const { fieldName } = info
-    const { operation } = info.operation
+    const fieldName = opts.fieldName || info.fieldName
+    const operation = opts.operation || info.operation.operation
 
     const params = {
       schema,
