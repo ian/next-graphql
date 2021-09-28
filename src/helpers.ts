@@ -22,7 +22,6 @@ export function onlyTypes(...types) {
 
 function matchesType(type, allowedTypes) {
   return _.find(allowedTypes, allowed => {
-    // console.log(typeof allowed)
     return !!type.match(`^${allowed}$`)
   })
 }
