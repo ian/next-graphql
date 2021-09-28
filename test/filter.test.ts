@@ -1,5 +1,5 @@
-import {formatSdl} from 'format-graphql';
-import { printSchema } from 'graphql';
+import { formatSdl } from "format-graphql"
+import { printSchema } from "graphql"
 import testServer from "../.jest/server"
 import { remote, helpers } from "../src"
 
@@ -9,10 +9,10 @@ describe("#exceptTypes", () => {
       schemas: {
         spacex: remote("https://api.spacex.land/graphql", {
           filter: {
-            types: helpers.exceptTypes("Ship")
+            types: helpers.exceptTypes("Ship"),
           },
-        })
-      }
+        }),
+      },
     }).then(({ schema }) => schema)
 
     const typeMap = Object.keys(schema.getTypeMap())
@@ -24,10 +24,10 @@ describe("#exceptTypes", () => {
       schemas: {
         spacex: remote("https://api.spacex.land/graphql", {
           filter: {
-            types: helpers.exceptTypes("Ship.*" )
+            types: helpers.exceptTypes("Ship.*"),
           },
-        })
-      }
+        }),
+      },
     }).then(({ schema }) => schema)
 
     const typeMap = Object.keys(schema.getTypeMap())
@@ -41,18 +41,18 @@ describe("exceptFields", () => {
     const spacex = await remote("https://api.spacex.land/graphql", {
       filter: {
         fields: helpers.exceptFields({
-          "Ship": "name"
-        })
-      }
+          Ship: "name",
+        }),
+      },
     })
 
     const schema = await testServer({
       schemas: {
-        spacex
-      }
+        spacex,
+      },
     }).then(({ schema }) => schema)
 
-    const fieldsFor = (s) => s.getTypeMap()['Ship'].toConfig()['fields']
+    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
 
     expect(Object.keys(fieldsFor(schema))).not.toContain("name")
     expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
@@ -63,12 +63,12 @@ describe("#onlyTypes", () => {
   it("should only have the type", async () => {
     const schema = await testServer({
       schemas: {
-        spacex:remote("https://api.spacex.land/graphql", {
+        spacex: remote("https://api.spacex.land/graphql", {
           filter: {
-            types: helpers.onlyTypes("String","Ship")
+            types: helpers.onlyTypes("String", "Ship"),
           },
-        })    
-      }
+        }),
+      },
     }).then(({ schema }) => schema)
 
     const typeMap = Object.keys(schema.getTypeMap())
@@ -79,14 +79,14 @@ describe("#onlyTypes", () => {
   it("should work with regex", async () => {
     const spacex = await remote("https://api.spacex.land/graphql", {
       filter: {
-        types: helpers.onlyTypes("String", "Ship.*" )
+        types: helpers.onlyTypes("String", "Ship.*"),
       },
     })
-    
+
     const schema = await testServer({
       schemas: {
-        spacex
-      }
+        spacex,
+      },
     }).then(({ schema }) => schema)
 
     const typeMap = Object.keys(schema.getTypeMap())
