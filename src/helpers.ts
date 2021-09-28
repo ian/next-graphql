@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 export function exceptTypes(...types) {
   const aryTypes = Array(types).flat()
   return (type) => !(aryTypes.includes(type))
@@ -15,8 +17,11 @@ export function exceptFields(pairs) {
 
 export function onlyTypes(...types) {
   const aryTypes = Array(types).flat()
-  return (type) => {
-    const included = aryTypes.includes(type)
-    return included
-  }
+  return (type) => matches(type, aryTypes)
+}
+
+function matches(type, allowedTypes) {
+  return _.find(allowedTypes, allowed => {
+    return !!type.match(allowed)
+  })
 }

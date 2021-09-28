@@ -44,7 +44,7 @@ describe("exceptFields", () => {
 })
 
 describe("#onlyTypes", () => {
-  it.only("should only inlucde the type", async () => {
+  it("should only have the type", async () => {
     const spacex = await remote("https://api.spacex.land/graphql", {
       filter: {
         types: helpers.onlyTypes("String","Ship")
@@ -60,5 +60,23 @@ describe("#onlyTypes", () => {
     const typeMap = Object.keys(schema.getTypeMap())
     expect(typeMap).toContain("Ship")
     expect(typeMap).not.toContain("ShipMission")
+  })
+
+  it.only("should work with regex", async () => {
+    const spacex = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        types: helpers.onlyTypes("String","Ship.*")
+      },
+    })
+    
+    const schema = await testServer({
+      schemas: {
+        spacex
+      }
+    }).then(({ schema }) => schema)
+
+    const typeMap = Object.keys(schema.getTypeMap())
+    expect(typeMap).toContain("Ship")
+    expect(typeMap).toContain("ShipMission")
   })
 })
