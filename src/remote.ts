@@ -75,37 +75,4 @@ ${variables ? JSON.stringify(variables, null, 2) : ""}
   schema.originalSchema = originalSchema
 
   return schema
-
-  // if (opts.filter) {
-  //   schema = prune() // as WrappedGraphQLSchema
-  // }
-
-  // schema.originalSchema = wrapSchema({
-  //   schema,
-  //   executor,
-  // })
-
-  // const transforms = []
-  // const schema = await introspectSchema(executor)
-
-  // if (opts.filter) {
-  //   transforms.push(filterTransformer(opts.filter))
-  //   transforms.push(pruneTransformer())
-  // }
-
-  // const filtered = wrapSchema({
-  //   schema,
-  //   executor,
-  //   transforms,
-  // }) as WrappedGraphQLSchema
-
-  // const pruned = pruneSchema(filtered)
-  // console.log({ pruned })
-
-  // filtered.originalSchema = wrapSchema({
-  //   schema,
-  //   executor,
-  // })
-
-  // return filtered
 }
