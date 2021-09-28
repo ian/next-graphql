@@ -2,7 +2,7 @@ import { fetch } from "cross-fetch"
 import { GraphQLSchema, printSchema } from "graphql"
 import { print } from "graphql"
 import { introspectSchema, wrapSchema } from "@graphql-tools/wrap"
-import { pruneTransformer, FilterOpts } from "./prune"
+import { filterTransformer, pruneTransformer, FilterOpts } from "./transform"
 
 const DEFAULT_OPTS = {
   headers: {}
@@ -58,7 +58,8 @@ ${variables ? JSON.stringify(variables, null, 2): ""}
   const transforms = []
   const schema = await introspectSchema(executor)
   if (opts.filter) {
-    transforms.push(pruneTransformer(opts.filter))
+    transforms.push(filterTransformer(opts.filter))
+    transforms.push(pruneTransformer())
   }
 
   const wrapped = wrapSchema({

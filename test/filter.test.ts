@@ -1,3 +1,4 @@
+import { printSchema } from "graphql"
 import testServer from "../.jest/server"
 import { remote, helpers } from "../src"
 
@@ -55,6 +56,27 @@ describe("exceptFields", () => {
     expect(Object.keys(fieldsFor(schema))).not.toContain("name")
     expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
   })
+
+  it("should work with regex", async () => {
+    const spacex = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        fields: helpers.exceptFields({
+          Ship: "i.*",
+        }),
+      },
+    })
+
+    const schema = await testServer({
+      schemas: {
+        spacex,
+      },
+    }).then(({ schema }) => schema)
+
+    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
+
+    expect(Object.keys(fieldsFor(schema))).not.toContain("image")
+    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("image")
+  })
 })
 
 describe("#onlyTypes", () => {
@@ -90,5 +112,54 @@ describe("#onlyTypes", () => {
     const typeMap = Object.keys(schema.getTypeMap())
     expect(typeMap).toContain("Ship")
     expect(typeMap).toContain("ShipMission")
+  })
+})
+
+describe("onlyFields", () => {
+  it.only("include all fields except filtered", async () => {
+    const spacex = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        fields: helpers.onlyFields({
+          Ship: "name",
+        }),
+      },
+    })
+
+    console.log(printSchema(spacex))
+
+    const schema = await testServer({
+      schemas: {
+        spacex,
+      },
+    }).then(({ schema }) => schema)
+
+    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
+
+    expect(Object.keys(fieldsFor(schema))).not.toContain("name")
+    // smoke test
+    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
+  })
+
+  it("should work with regex", async () => {
+    const spacex = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        fields: helpers.onlyFields({
+          Ship: "i.*",
+        }),
+      },
+    })
+
+    const schema = await testServer({
+      schemas: {
+        spacex,
+      },
+    }).then(({ schema }) => schema)
+
+    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
+
+    expect(Object.keys(fieldsFor(schema))).not.toContain("name")
+    expect(Object.keys(fieldsFor(schema))).toContain("image")
+    // smoke test
+    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("image")
   })
 })
