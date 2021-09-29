@@ -8,22 +8,29 @@ type ArgPruner = (
   fieldName: string,
   argName: string
 ) => boolean
+type RootPruner = (operationName: string, fieldName: string) => boolean
 
 export type FilterOpts = {
   types?: TypePruner
   fields?: FieldPruner
   args?: ArgPruner
+  root?: RootPruner
 }
 
 export function filter(schema, opts: FilterOpts) {
-  const { types: typeFilter, fields: fieldFilter, args: argumentFilter } = opts
+  const {
+    types: typeFilter,
+    fields: fieldFilter,
+    args: argumentFilter,
+    root: rootFieldFilter,
+  } = opts
 
   return filterSchema({
     schema,
     typeFilter,
     fieldFilter,
     argumentFilter,
-    // rootFieldFilter: (operationName, fieldName) => isPublicName(fieldName),
+    rootFieldFilter,
   })
 }
 

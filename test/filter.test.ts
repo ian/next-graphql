@@ -1,123 +1,77 @@
-import { printSchema } from "graphql"
-import testServer from "../.jest/server"
 import { remote, helpers } from "../src"
 
-describe("#exceptTypes", () => {
-  it("include all types except the filtered", async () => {
-    const schema = await testServer({
-      schemas: {
-        spacex: remote("https://api.spacex.land/graphql", {
-          filter: {
-            types: helpers.exceptTypes("Ship"),
-          },
-        }),
-      },
-    }).then(({ schema }) => schema)
+describe("types", () => {
+  const getTypes = (schema) => Object.keys(schema.getTypeMap()).sort()
 
-    const typeMap = Object.keys(schema.getTypeMap())
-    expect(typeMap).not.toContain("Ship")
+  it("smoke test", async () => {
+    const schema = await remote("https://api.spacex.land/graphql")
+    const types = getTypes(schema)
+    expect(types).toContain("Ship")
+    expect(types).toContain("Launch")
   })
 
-  it("should work with regex", async () => {
-    const schema = await testServer({
-      schemas: {
-        spacex: remote("https://api.spacex.land/graphql", {
-          filter: {
-            types: helpers.exceptTypes("Ship.*"),
-          },
-        }),
-      },
-    }).then(({ schema }) => schema)
-
-    const typeMap = Object.keys(schema.getTypeMap())
-    expect(typeMap).not.toContain("Ship")
-    expect(typeMap).not.toContain("ShipMission")
-  })
-})
-
-describe("exceptFields", () => {
-  it("include all fields except filtered", async () => {
-    const spacex = await remote("https://api.spacex.land/graphql", {
+  it("#onlyTypes", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
       filter: {
-        fields: helpers.exceptFields({
-          Ship: "name",
-        }),
+        types: helpers.onlyTypes("String", "Ship"),
       },
     })
 
-    const schema = await testServer({
-      schemas: {
-        spacex,
-      },
-    }).then(({ schema }) => schema)
-
-    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
-
-    expect(Object.keys(fieldsFor(schema))).not.toContain("name")
-    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
+    const types = getTypes(schema)
+    expect(types).toContain("Ship")
+    expect(types).not.toContain("Launch")
   })
 
-  it("should work with regex", async () => {
-    const spacex = await remote("https://api.spacex.land/graphql", {
-      filter: {
-        fields: helpers.exceptFields({
-          Ship: "i.*",
-        }),
-      },
-    })
-
-    const schema = await testServer({
-      schemas: {
-        spacex,
-      },
-    }).then(({ schema }) => schema)
-
-    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
-
-    expect(Object.keys(fieldsFor(schema))).not.toContain("image")
-    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("image")
-  })
-})
-
-describe("#onlyTypes", () => {
-  it("should only have the type", async () => {
-    const schema = await testServer({
-      schemas: {
-        spacex: remote("https://api.spacex.land/graphql", {
-          filter: {
-            types: helpers.onlyTypes("String", "Ship"),
-          },
-        }),
-      },
-    }).then(({ schema }) => schema)
-
-    const typeMap = Object.keys(schema.getTypeMap())
-    expect(typeMap).toContain("Ship")
-    expect(typeMap).not.toContain("ShipMission")
-  })
-
-  it("should work with regex", async () => {
-    const spacex = await remote("https://api.spacex.land/graphql", {
+  it("#onlyTypes regex", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
       filter: {
         types: helpers.onlyTypes("String", "Ship.*"),
       },
     })
 
-    const schema = await testServer({
-      schemas: {
-        spacex,
-      },
-    }).then(({ schema }) => schema)
+    const types = getTypes(schema)
+    expect(types).toContain("Ship")
+    expect(types).not.toContain("Launch")
+  })
 
-    const typeMap = Object.keys(schema.getTypeMap())
-    expect(typeMap).toContain("Ship")
-    expect(typeMap).toContain("ShipMission")
+  it("#exceptTypes", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        types: helpers.exceptTypes("Ship"),
+      },
+    })
+
+    const types = getTypes(schema)
+    expect(types).not.toContain("Ship")
+    expect(types).toContain("ShipsFind")
+    expect(types).toContain("Launch")
+  })
+
+  it("#exceptTypes regex", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        types: helpers.exceptTypes("Ship.*"),
+      },
+    })
+
+    const types = getTypes(schema)
+    expect(types).not.toContain("Ship")
+    expect(types).not.toContain("ShipsFind")
+    expect(types).toContain("Launch")
   })
 })
 
-describe("onlyFields", () => {
-  it("include all fields except filtered", async () => {
-    const spacex = await remote("https://api.spacex.land/graphql", {
+describe("fields", () => {
+  const getFields = (schema) => schema.getTypeMap()["Ship"].toConfig()["fields"]
+  it("smoke test", async () => {
+    const schema = await remote("https://api.spacex.land/graphql")
+    const fields = getFields(schema)
+    expect(fields.id).toBeDefined()
+    expect(fields.name).toBeDefined()
+  })
+
+  it("#onlyFields", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
       filter: {
         fields: helpers.onlyFields({
           Ship: "name",
@@ -125,40 +79,116 @@ describe("onlyFields", () => {
       },
     })
 
-    const schema = await testServer({
-      schemas: {
-        spacex,
-      },
-    }).then(({ schema }) => schema)
-
-    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
-    const schemaKeys = Object.keys(fieldsFor(schema))
-
-    expect(schemaKeys).toEqual(["name"])
-    // smoke test
-    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("name")
+    const fields = getFields(schema)
+    expect(fields.name).toBeDefined()
+    expect(fields.id).toBeUndefined()
   })
 
-  it("should work with regex", async () => {
-    const spacex = await remote("https://api.spacex.land/graphql", {
+  it("#onlyFields regex", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
       filter: {
         fields: helpers.onlyFields({
-          Ship: "i.*",
+          Ship: "c.*",
         }),
       },
     })
 
-    const schema = await testServer({
-      schemas: {
-        spacex,
+    const fields = getFields(schema)
+    expect(fields.class).toBeDefined()
+    expect(fields.course_deg).toBeDefined()
+    expect(fields.id).toBeUndefined()
+  })
+
+  it("#exceptFields", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        fields: helpers.exceptFields({
+          Ship: "name",
+        }),
       },
-    }).then(({ schema }) => schema)
+    })
 
-    const fieldsFor = (s) => s.getTypeMap()["Ship"].toConfig()["fields"]
+    const fields = getFields(schema)
+    expect(fields.name).toBeUndefined()
+    expect(fields.id).toBeDefined()
+  })
 
-    expect(Object.keys(fieldsFor(schema))).not.toContain("name")
-    expect(Object.keys(fieldsFor(schema))).toContain("image")
-    // smoke test
-    expect(Object.keys(fieldsFor(spacex.originalSchema))).toContain("image")
+  it("#exceptFields regex", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        fields: helpers.exceptFields({
+          Ship: "n.*",
+        }),
+      },
+    })
+
+    const fields = getFields(schema)
+    expect(fields.name).toBeUndefined()
+    expect(fields.id).toBeDefined()
+  })
+})
+
+describe("root", () => {
+  it("smoke test", async () => {
+    const schema = await remote("https://api.spacex.land/graphql")
+    const fields = schema.getTypeMap()["Query"].toConfig()["fields"]
+    expect(fields.ship).not.toBeUndefined()
+    expect(fields.ships).not.toBeUndefined()
+  })
+
+  it("#onlyFields", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        root: helpers.onlyFields({
+          Query: "ship",
+        }),
+      },
+    })
+
+    const fields = schema.getTypeMap()["Query"].toConfig()["fields"]
+    expect(fields.ship).toBeDefined()
+    expect(fields.ships).toBeUndefined()
+  })
+
+  it("#onlyFields regex", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        root: helpers.onlyFields({
+          Query: "s.*",
+        }),
+      },
+    })
+
+    const fields = schema.getTypeMap()["Query"].toConfig()["fields"]
+    expect(fields.ship).toBeDefined()
+    expect(fields.ships).toBeDefined()
+  })
+
+  it("#exceptFields", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        root: helpers.exceptFields({
+          Query: "ship",
+        }),
+      },
+    })
+
+    const fields = schema.getTypeMap()["Query"].toConfig()["fields"]
+    expect(fields.ship).toBeUndefined()
+    expect(fields.ships).not.toBeUndefined()
+  })
+
+  it("#exceptFields", async () => {
+    const schema = await remote("https://api.spacex.land/graphql", {
+      filter: {
+        root: helpers.exceptFields({
+          Query: "s.*",
+        }),
+      },
+    })
+
+    const fields = schema.getTypeMap()["Query"].toConfig()["fields"]
+    expect(fields.ship).toBeUndefined()
+    expect(fields.ships).toBeUndefined()
   })
 })
