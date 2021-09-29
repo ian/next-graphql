@@ -23,7 +23,8 @@ export default function delegate(schema, opts: Opts = {}) {
       info,
     }
 
-    if (opts.resolve) return delegateToSchema(params).then(opts.resolve)
-    return delegateToSchema(params)
+    const res = await delegateToSchema(params)
+    if (opts.resolve) return opts.resolve(res)
+    return res
   }
 }
