@@ -18,14 +18,12 @@ describe("error handling", () => {
 })
 
 const alwaysFail = async () => {
-  throw new Error("THIS WILL ALWAYS FAIL")
+  return new Error("THIS WILL ALWAYS FAIL")
 }
 
-const ruleThatShouldNotBeCalled = rule()(
-  async () => {
-    return "SHOULD NEVER BE CALLED" 
-  }
-)
+const ruleThatShouldNotBeCalled = rule()(async () => {
+  return "SHOULD NEVER BE CALLED"
+})
 
 const server = () => {
   return testServer({
@@ -44,12 +42,12 @@ const server = () => {
           },
         },
         middleware: [alwaysFail],
-        guards: {
-          Query: {
-            testing: ruleThatShouldNotBeCalled
-          }
-        }
       }),
     ],
+    guards: {
+      Query: {
+        testing: ruleThatShouldNotBeCalled,
+      },
+    },
   })
 }

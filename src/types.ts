@@ -22,13 +22,13 @@ export type Extension = {
     [key: string]: any
   }
   middleware?: Middleware | Middleware[]
-  guards?: Guards
+
+  // For now we're not going to support extension guards. Maybe in the future we will
+  // guards?: Guards
 }
 
 export type Schemas = {
-  [name: string]:
-    | GraphQLSchema
-    | Promise<GraphQLSchema>
+  [name: string]: GraphQLSchema | Promise<GraphQLSchema>
 }
 
 export type CodegenConfig = {
@@ -38,7 +38,7 @@ export type CodegenConfig = {
 export type Config = {
   session?: any
   schemas?: Schemas
-  extensions?: ((schemas: Schemas) => Extension)[],
+  extensions?: ((schemas: Schemas) => Extension)[]
   middleware?: Middleware[]
   guards?: Guards
   // codegen?: CodegenConfig
