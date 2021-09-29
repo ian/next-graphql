@@ -6,6 +6,7 @@ type Opts = {
   context?: (object) => object
   operation?: "query" | "mutation" | "subscription"
   fieldName?: string
+  resolve?: (object) => object
 }
 
 export default function delegate(schema, opts: Opts = {}) {
@@ -22,6 +23,7 @@ export default function delegate(schema, opts: Opts = {}) {
       info,
     }
 
+    if (opts.resolve) return delegateToSchema(params).then(opts.resolve)
     return delegateToSchema(params)
   }
 }
