@@ -6,7 +6,13 @@ type Opts = {
   context?: (object) => object
   operation?: "query" | "mutation" | "subscription"
   fieldName?: string
-  resolve?: (object) => object
+  resolve?: (
+    res: object,
+    obj: any,
+    args: object,
+    context: object,
+    info: object
+  ) => object
 }
 
 export default function delegate(schema, opts: Opts = {}) {
@@ -28,7 +34,9 @@ export default function delegate(schema, opts: Opts = {}) {
 
   if (opts.resolve) {
     return async (obj, args, context, info) => {
-      return handler(obj, args, context, info).then(opts.resolve)
+      return handler(obj, args, context, info).then((res) =>
+        opts.resolve(res, obj, args, context, info)
+      )
     }
   }
 
