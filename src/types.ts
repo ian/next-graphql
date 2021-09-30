@@ -36,6 +36,7 @@ export type CodegenConfig = {
 }
 
 export type Config = {
+  cors?: boolean
   session?: any
   schemas?: Schemas
   extensions?: ((schemas: Schemas) => Extension)[]
