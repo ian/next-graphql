@@ -10,7 +10,7 @@ type Opts = {
 }
 
 export default function delegate(schema, opts: Opts = {}) {
-  return async (obj, args, context, info) => {
+  const handler = async (obj, args, context, info) => {
     const fieldName = opts.fieldName || info.fieldName
     const operation = opts.operation || info.operation.operation
 
@@ -23,8 +23,14 @@ export default function delegate(schema, opts: Opts = {}) {
       info,
     }
 
-    const res = await delegateToSchema(params)
-    if (opts.resolve) return opts.resolve(res)
-    return res
+    return delegateToSchema(params)
   }
+
+  if (opts.resolve) {
+    return async (obj, args, context, info) => {
+      return handler(obj, args, context, info).then(opts.resolve)
+    }
+  }
+
+  return handler
 }
