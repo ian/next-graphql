@@ -2,18 +2,6 @@
 
 NextGraphQL.js is a zero-config [GraphQL](https://graphql.org) server for [Next.js](https://nextjs.org/), supporting Vercel Serverless environment runtime.
 
-# Getting Started
-
-From your main Next.js project path run:
-
-```
-npx next-graphql init
-```
-
-Then, open http://localhost:3000/api/graphql. 
-
-<!-- We were lovingly inspired by the simplicity of [next-auth](https://github.com/nextauthjs/next-auth) and [next-crud](https://github.com/roldanjr/next-crud) -->
-
 # Features
 
 - Easily add any number of GraphQLSchemas together.
@@ -69,7 +57,7 @@ For a complete example, see [examples/nexus](./examples/nexus).
 
 ## NextAuth
 
-One of the main motivations behind this project was to provide a more integrated experience with GraphQL and Authentication. 
+One of the main motivations behind this project was to provide a more integrated experience with GraphQL and Authentication.
 
 Most BaaS services provide some sort of authentication capabilities but having deep auth integration with your project is beneficial.
 
@@ -78,7 +66,7 @@ Adding [NextAuth](https://github.com/nextauthjs/next-auth) is a few lines of cod
 ```ts
 // pages/api/graphql.ts
 
-import { getSession } from "next-auth/client" 
+import { getSession } from "next-auth/client"
 import { handler as nextGraphQLHandler } from "next-graphql"
 
 export const config = {
@@ -166,7 +154,9 @@ import { handler as nextGraphQLHandler, remote } from "next-graphql"
 import { rule } from "next-graphql/guards"
 
 const fiftyPercentFailWithError = rule()(async (parent, args, ctx, info) => {
-  return Math.floor(Math.random() * 100) % 2 === 0 ? true : new Error("You were randomly selected to have this endpoint fail.")
+  return Math.floor(Math.random() * 100) % 2 === 0
+    ? true
+    : new Error("You were randomly selected to have this endpoint fail.")
 })
 
 export const config = {
@@ -181,9 +171,9 @@ export default nextGraphQLHandler({
   },
   guards: {
     Query: {
-      ships: fiftyPercentFailWithError
-    }
-  }
+      ships: fiftyPercentFailWithError,
+    },
+  },
 })
 ```
 
@@ -259,16 +249,16 @@ const customExtender = {
     Query: {
       ships: async (obj, args, context) => {
         return getDataFromOtherSource() // custom override resolver
-      }
-    }
-  }
+      },
+    },
+  },
 }
 
 export default nextGraphQLHandler({
   schemas: {
     spacex: remote("https://api.spacex.land/graphql"),
   },
-  extensions: [customExtender]
+  extensions: [customExtender],
 })
 ```
 
@@ -322,11 +312,11 @@ The `init` command will add the following to to your project structure:
 
 `./graphql/client`
 
-This is the base directory for the [graphql-code-generator](https://www.graphql-code-generator.com/) configuration. 
+This is the base directory for the [graphql-code-generator](https://www.graphql-code-generator.com/) configuration.
 
 Feel free to organize this folder however you'd like, fragments + operations files are a suggestions. All configuration is run off the codegen.yml so make sure edit this file if you make changes to the folder structure.
 
-NextGraphQL.js seeks to simply setup the structure for code generation, but remains unopinionated on the matter of picking a frontend GraphQL client. 
+NextGraphQL.js seeks to simply setup the structure for code generation, but remains unopinionated on the matter of picking a frontend GraphQL client.
 
 The repository author's personal favorite is URQL. Provides idiomatic integrations into React, Svelte, and Vue and is really easy to use.
 
