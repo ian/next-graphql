@@ -2,13 +2,13 @@
   "name": "next-graphql",
   "version": "2.2.11",
   "description": "GraphQL for Next.js",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
-    ".": "./index.js",
-    "./client": "./client.js",
-    "./guards": "./guards.js",
-    "./helpers": "./helpers.js"
+    ".": "./dist/index.js",
+    "./client": "./dist/client.js",
+    "./guards": "./dist/guards.js",
+    "./helpers": "./dist/helpers.js"
   },
   "files": [
     "**/*"

@@ -1,6 +1,5 @@
 import _ from "lodash"
 import { applyMiddleware } from "graphql-middleware"
-import { shield, deny } from "graphql-shield"
 
 import stitch from "./transform"
 import { Config } from "./types"
@@ -8,12 +7,12 @@ import { guardsMiddleware } from "./guards"
 
 export async function buildSchema(opts: Config) {
   const {
-    schemas,
-    extensions,
+    schema,
+    remotes,
     guards: optsGuards,
     middleware: optsMiddleware,
   } = opts
-  const subschemas = await allPromiseValues(schemas)
+  const remoteSchemas = await allPromiseValues(remotes)
 
   const typeDefs = []
   const resolvers = {}
@@ -23,14 +22,17 @@ export async function buildSchema(opts: Config) {
   if (optsGuards) _.merge(guards, optsGuards)
   if (optsMiddleware) middleware.push(optsMiddleware)
 
-  extensions?.forEach((extension) => {
-    const extended = extension(subschemas)
-    if (extended.typeDefs) typeDefs.push(extended.typeDefs)
-    if (extended.resolvers) _.merge(resolvers, extended.resolvers)
-    if (extended.middleware) middleware.push(extended.middleware)
-    // For now we're not going to support extension guards. Maybe in the future we will
-    // if (extended.guards) _.merge(guards, extended.guards)
-  })
+  if (schema) {
+    Array(schema)
+      .flat()
+      .forEach((schema) => {
+        if (schema.typeDefs) typeDefs.push(schema.typeDefs)
+        if (schema.resolvers) _.merge(resolvers, schema.resolvers)
+        if (schema.middleware) middleware.push(schema.middleware)
+        // For now we're not going to support schema guards. Maybe in the future we will
+        // if (extended.guards) _.merge(guards, extended.guards)
+      })
+  }
 
   middleware.push(guardsMiddleware(guards))
 
@@ -39,9 +41,9 @@ export async function buildSchema(opts: Config) {
     resolvers,
   }
 
-  const schema = stitch(Object.values(subschemas), stitchableExtensions)
+  const stitched = stitch(Object.values(remoteSchemas), stitchableExtensions)
 
-  return applyMiddleware(schema, ...middleware.flat())
+  return applyMiddleware(stitched, ...middleware.flat())
 }
 
 const allPromiseValues = async (object) => {
