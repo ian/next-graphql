@@ -19,7 +19,6 @@
     "paths": {
       "types": ["./types"],
       "next-graphql": ["./src/server"],
-      "next-graphql/client": ["./src/client"],
       "next-graphql/guards": ["./src/guards"]
     }
 
