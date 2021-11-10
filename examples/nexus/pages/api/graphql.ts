@@ -8,7 +8,7 @@ export const config = {
 }
 
 export default nextHandler({
-  schemas: {
+  remote: {
     nexus,
   },
 })

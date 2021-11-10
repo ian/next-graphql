@@ -1,5 +1,6 @@
 import testServer from "../.jest/server"
-import { or, rule } from "../src/guards"
+import { Guards } from "../src"
+const { or, rule } = Guards
 
 describe("error handling", () => {
   it("should handle the error and not use guards error handling", async () => {
@@ -27,7 +28,7 @@ const ruleThatShouldNotBeCalled = rule()(async () => {
 
 const server = () => {
   return testServer({
-    extensions: [
+    schema: [
       () => ({
         typeDefs: `
         type Query {

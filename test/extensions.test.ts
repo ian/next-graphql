@@ -10,28 +10,30 @@ describe("extensions", () => {
           ship: () => {
             return {
               id: "HOLLYWOOD",
-              name: "OVERRIDDEN_NAME"
+              name: "OVERRIDDEN_NAME",
             }
-          }
-        }
-      }
+          },
+        },
+      },
     })
-    
+
     const data = await testServer({
-      schemas: {
+      remote: {
         spacex: remote("https://api.spacex.land/graphql"),
       },
-      extensions: [overridder]
-    }).then(({graphql}) => 
-      graphql(`
-      query {
-        ship(id: "HOLLYWOOD") {
-          id
-          name
-        }
-      }
-      `)
-    ).then(res => res.data)
+      schema: [overridder],
+    })
+      .then(({ graphql }) =>
+        graphql(`
+          query {
+            ship(id: "HOLLYWOOD") {
+              id
+              name
+            }
+          }
+        `)
+      )
+      .then((res) => res.data)
 
     expect(data.ship?.name).toEqual("OVERRIDDEN_NAME")
   })
@@ -44,37 +46,38 @@ describe("extensions", () => {
           ship: () => {
             return {
               id: "HOLLYWOOD",
-              name: "OVERRIDDEN_NAME"
+              name: "OVERRIDDEN_NAME",
             }
-          }
-        }
-      }
+          },
+        },
+      },
     })
 
     const dupeQuery = () => ({
       typeDefs: ``,
       resolvers: {
         // this previously caused issues
-        Query: {
-        }
-      }
+        Query: {},
+      },
     })
-    
+
     const data = await testServer({
-      schemas: {
+      remote: {
         spacex: remote("https://api.spacex.land/graphql"),
       },
-      extensions: [overridder, dupeQuery]
-    }).then(({graphql}) => 
-      graphql(`
-      query {
-        ship(id: "HOLLYWOOD") {
-          id
-          name
-        }
-      }
-      `)
-    ).then(res => res.data)
+      schema: [overridder, dupeQuery],
+    })
+      .then(({ graphql }) =>
+        graphql(`
+          query {
+            ship(id: "HOLLYWOOD") {
+              id
+              name
+            }
+          }
+        `)
+      )
+      .then((res) => res.data)
 
     expect(data.ship?.name).toEqual("OVERRIDDEN_NAME")
   })

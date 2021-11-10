@@ -19,11 +19,9 @@
     "paths": {
       "types": ["./types"],
       "next-graphql": ["./src/server"],
-      "next-graphql/client": ["./src/client"],
       "next-graphql/guards": ["./src/guards"]
-    },
-    
-    
+    }
+
     // // "module": "esnext",
     // "lib": ["dom", "dom.iterable", "esnext"],
     // "importHelpers": true,

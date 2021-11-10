@@ -7,7 +7,7 @@ export const config = {
 }
 
 export default nextHandler({
-  schemas: {
-    spacex: remote("https://api.spacex.land/graphql")
+  remote: {
+    spacex: remote("https://api.spacex.land/graphql"),
   },
 })

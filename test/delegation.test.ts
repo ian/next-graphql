@@ -49,10 +49,10 @@ const server = async (args = {}) => {
   })
 
   const config = {
-    schemas: {
+    remote: {
       spacex: remote("https://api.spacex.land/graphql"),
     },
-    extensions: [overridder],
+    schema: [overridder],
   }
 
   const { graphql } = await testServer(config)

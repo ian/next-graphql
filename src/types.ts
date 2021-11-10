@@ -16,7 +16,7 @@ export type Middleware = (
   info: any
 ) => Promise<any>
 
-export type Extension = {
+export type Schema = {
   typeDefs?: string
   resolvers?: {
     [key: string]: any
@@ -27,7 +27,9 @@ export type Extension = {
   // guards?: Guards
 }
 
-export type Schemas = {
+export type CallableSchema = (remote: RemoteSchemas) => Schema
+
+export type RemoteSchemas = {
   [name: string]: GraphQLSchema | Promise<GraphQLSchema>
 }
 
@@ -38,11 +40,10 @@ export type CodegenConfig = {
 export type Config = {
   cors?: boolean
   session?: any
-  schemas?: Schemas
-  extensions?: ((schemas: Schemas) => Extension)[]
+  schema?: Schema | CallableSchema | (Schema | CallableSchema)[]
+  remote?: RemoteSchemas
   middleware?: Middleware[]
   guards?: Guards
-  // codegen?: CodegenConfig
 }
 
 export type Server = ApolloServer & {

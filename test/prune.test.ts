@@ -1,5 +1,3 @@
-import testServer from "../.jest/server"
-import { printSchema } from "graphql"
 import { remote, helpers } from "../src"
 
 describe("#prune", () => {

@@ -1,3 +1,4 @@
+import { renderPlaygroundPage } from "graphql-playground-html"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Config } from "./types"
 import { buildServer } from "./server"
@@ -28,7 +29,13 @@ function handler(config: Config = {}) {
 
       await handler(req, res)
     } else {
-      res.send("next-graphql - WIP")
+      res.setHeader("Content-Type", "text/html")
+      res.send(
+        renderPlaygroundPage({
+          endpoint: `/api/graphql`,
+        })
+      )
+      res.status(200)
     }
   }
 }
