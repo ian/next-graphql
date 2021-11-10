@@ -34,7 +34,7 @@ export async function buildSchema(opts: Config) {
       })
   }
 
-  middleware.push(guardsMiddleware(guards))
+  // middleware.push(guardsMiddleware(guards))
 
   const stitchableExtensions = {
     typeDefs: typeDefs.join("\n"),

@@ -36,27 +36,10 @@ import { buildServer } from "./server"
 function handler(config: Config = {}) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const server = await buildServer(config)
-
-    // const reply = await server.inject({
-    //   // @ts-ignore
-    //   method: req.method,
-    //   payload: req.body,
-    //   headers: req.headers,
-    //   cookies: req.cookies,
-    //   query: req.query,
-    //   url: req.url,
-    // })
-    // const { headers } = reply
-
-    // for (const headerKey in headers) {
-    //   const header = headers[headerKey]!
-    //   res.setHeader(headerKey, header)
-    // }
-
-    // // res.status(statusCode)
-    // // res.end(rawPayload)
-    // console.log({ reply })
-    res.end()
+    const { query, variables } = req.body
+    const gql = server.graphql(query, variables)
+    console.log({ gql })
+    res.send({ body: "OK" })
   }
 }
 

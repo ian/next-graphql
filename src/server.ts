@@ -2,7 +2,7 @@ import Fastify, { FastifyInstance } from "fastify"
 import cors from "fastify-cors"
 import mercurius from "mercurius"
 
-import { Config, Server } from "./types"
+import { Config } from "./types"
 import { buildSchema } from "./schema"
 
 export async function buildServer(config: Config): Promise<FastifyInstance> {
@@ -10,28 +10,18 @@ export async function buildServer(config: Config): Promise<FastifyInstance> {
   const fastify = Fastify()
   const { path = "/api/graphql" } = config
 
-  fastify
-    .register(mercurius, {
-      path,
-      schema,
-      // resolvers,
-      context: async (req, res) => {
-        const context = { req, res }
-        if (config.session) {
-          Object.assign(context, { session: await config.session({ req }) })
-        }
-        return context
-      },
-    })
-
-    .register(require("fastify-nextjs"))
-    .after((error) => {
-      // app.next("/hello")
-      // @ts-ignore
-      fastify.next("/api/*", { method: "GET" })
-      // @ts-ignore
-      fastify.next("/api/*", { method: "POST" })
-    })
+  fastify.register(mercurius, {
+    path,
+    schema,
+    // resolvers,
+    context: async (req, res) => {
+      const context = { req, res }
+      if (config.session) {
+        Object.assign(context, { session: await config.session({ req }) })
+      }
+      return context
+    },
+  })
 
   fastify.register(cors, {
     origin: "*",
