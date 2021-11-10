@@ -36,6 +36,7 @@ export type CodegenConfig = {
 }
 
 export type Config = {
+  path?: string
   cors?: boolean
   session?: any
   schemas?: Schemas

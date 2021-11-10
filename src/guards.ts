@@ -10,4 +10,5 @@ export function guardsMiddleware(guards: Guards) {
   })
 }
 
-export { rule, and, not, or, allow, deny } from "graphql-shield"
+import { rule, and, not, or, allow, deny } from "graphql-shield"
+export default { rule, and, not, or, allow, deny }

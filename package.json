@@ -2,14 +2,8 @@
   "name": "next-graphql",
   "version": "2.2.11",
   "description": "GraphQL for Next.js",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "exports": {
-    ".": "./index.js",
-    "./client": "./client.js",
-    "./guards": "./guards.js",
-    "./helpers": "./helpers.js"
-  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "**/*"
   ],
@@ -48,10 +42,14 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "fastify": "^3.22.1",
+    "fastify-cors": "^6.0.2",
+    "fastify-nextjs": "^7.0.0",
     "graphql": "^15.3.0",
     "graphql-middleware": "^6.1.4",
     "graphql-request": "^3.5.0",
     "graphql-shield": "^7.5.0",
+    "mercurius": "^8.8.0",
     "micro": "^9.3.4",
     "ora": "^5.4.1"
   }
