@@ -1,13 +1,13 @@
 import testServer from "../.jest/server"
-import { remote } from "../src"
-import { or, rule } from "../src/guards"
+import { remote, Guards } from "../src"
+const { or, rule } = Guards
 
 describe("#guards", () => {
   it("should allow guarded endpoints", async () => {
     const { graphql } = await serverWithGuards({
       Query: {
-        ship: failRule
-      }
+        ship: failRule,
+      },
     })
 
     const { errors, data } = await graphql(`
@@ -27,10 +27,10 @@ describe("#guards", () => {
     it("should allow guarded endpoints", async () => {
       const { graphql } = await serverWithGuards({
         Query: {
-          ship: or(failRule, succeedRule)
-        }
+          ship: or(failRule, succeedRule),
+        },
       })
-  
+
       const { errors, data } = await graphql(`
         query {
           ship(id: "HOLLYWOOD") {
@@ -39,11 +39,13 @@ describe("#guards", () => {
           }
         }
       `)
-  
-      expect(data).toEqual({ ship: {
-        id: "HOLLYWOOD",
-        name: "Hollywood"
-      } })
+
+      expect(data).toEqual({
+        ship: {
+          id: "HOLLYWOOD",
+          name: "Hollywood",
+        },
+      })
       expect(errors).toBeUndefined()
     })
   })
@@ -51,21 +53,17 @@ describe("#guards", () => {
 
 async function serverWithGuards(guards) {
   return testServer({
-    schemas: {
+    remote: {
       spacex: remote("https://api.spacex.land/graphql"),
     },
     guards,
   })
 }
 
-const failRule = rule()(
-  async () => {
-    return new Error("FAIL")
-  }
-)
+const failRule = rule()(async () => {
+  return new Error("FAIL")
+})
 
-const succeedRule = rule()(
-  async () => {
-    return true
-  }
-)
+const succeedRule = rule()(async () => {
+  return true
+})

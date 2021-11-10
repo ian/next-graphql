@@ -34,7 +34,7 @@ export async function buildSchema(opts: Config) {
           // if (extended.guards) _.merge(guards, extended.guards)
         }
 
-        if (typeof schema === "function") adder(schema())
+        if (typeof schema === "function") adder(schema(remoteSchemas))
         else adder(schema)
       })
   }

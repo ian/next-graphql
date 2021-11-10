@@ -27,9 +27,9 @@ export type Schema = {
   // guards?: Guards
 }
 
-export type CallableSchema = () => Schema
+export type CallableSchema = (remote: RemoteSchemas) => Schema
 
-export type Remote = {
+export type RemoteSchemas = {
   [name: string]: GraphQLSchema | Promise<GraphQLSchema>
 }
 
@@ -41,7 +41,7 @@ export type Config = {
   cors?: boolean
   session?: any
   schema?: Schema | CallableSchema | (Schema | CallableSchema)[]
-  remote?: Remote
+  remote?: RemoteSchemas
   middleware?: Middleware[]
   guards?: Guards
 }

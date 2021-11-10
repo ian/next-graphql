@@ -23,7 +23,7 @@ describe("#session", () => {
 const server = (session) => {
   return testServer({
     session,
-    extensions: [
+    schema: [
       () => ({
         typeDefs: `
         type Query {
@@ -38,11 +38,10 @@ const server = (session) => {
             },
             secondEndpoint: (bj, args, context) => {
               return context.session
-            }
+            },
           },
         },
       }),
     ],
   })
 }
-

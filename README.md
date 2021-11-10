@@ -47,7 +47,7 @@ const nexus = makeSchema({
 })
 
 export default nextGraphQLHandler({
-  schemas: {
+  remote: {
     nexus,
   },
 })
@@ -77,7 +77,7 @@ export const config = {
 
 export default nextGraphQLHandler({
   session: ({ req }) => getSession({ req })
-  schemas: {
+  remote: {
     // ...
   }
 })
@@ -105,7 +105,7 @@ export const config = {
 
 export default nextGraphQLHandler({
   session: ({ req }) => getSession({ req })
-  schemas: {
+  remote: {
     // ...
   },
   guards: {
@@ -137,7 +137,7 @@ export const config = {
 }
 
 export default nextGraphQLHandler({
-  schemas: {
+  remote: {
     spacex: remote("https://api.spacex.land/graphql"),
   },
 })
@@ -166,7 +166,7 @@ export const config = {
 }
 
 export default nextGraphQLHandler({
-  schemas: {
+  remote: {
     spacex: remote("https://api.spacex.land/graphql"),
   },
   guards: {
@@ -193,7 +193,7 @@ export const config = {
 }
 
 export default nextGraphQLHandler({
-  schemas: {
+  remote: {
     graphcms: remote(process.env.GRAPHCMS_URL, {
       headers: {
         Authorization: "Bearer " + process.env.GRAPHCMS_TOKEN,
@@ -219,7 +219,7 @@ export const config = {
 }
 
 export default nextGraphQLHandler({
-  schemas: {
+  remote: {
     spacex: remote("https://api.spacex.land/graphql", {
       filter: {
         types: helpers.onlyTypes("Ship"),
@@ -255,10 +255,10 @@ const customExtender = {
 }
 
 export default nextGraphQLHandler({
-  schemas: {
+  remote: {
     spacex: remote("https://api.spacex.land/graphql"),
   },
-  extensions: [customExtender],
+  schema: [customExtender],
 })
 ```
 
@@ -339,7 +339,7 @@ import { nextHandler, remote } from "next-graphql"
 
 export const handler = () => {
   return nextHandler({
-    schemas: {
+    remote: {
       // ... add your schemas here
     },
   })
