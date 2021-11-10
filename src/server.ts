@@ -7,7 +7,6 @@ export async function buildServer(config: Config): Promise<Server> {
   const server = new ApolloServer({
     schema,
     logger: console,
-    introspection: true,
     context: async ({ req, res }) => {
       const context = { req, res }
       if (config.session) {
@@ -16,7 +15,7 @@ export async function buildServer(config: Config): Promise<Server> {
       return context
     },
     stopOnTerminationSignals: true,
-    // introspection: process.env.NODE_ENV === "development"
+    introspection: process.env.NODE_ENV === "development",
   })
 
   await server.start()

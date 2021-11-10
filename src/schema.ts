@@ -8,11 +8,11 @@ import { guardsMiddleware } from "./guards"
 export async function buildSchema(opts: Config) {
   const {
     schema,
-    remotes,
+    remote,
     guards: optsGuards,
     middleware: optsMiddleware,
   } = opts
-  const remoteSchemas = await allPromiseValues(remotes)
+  const remoteSchemas = await allPromiseValues(remote)
 
   const typeDefs = []
   const resolvers = {}
@@ -26,11 +26,16 @@ export async function buildSchema(opts: Config) {
     Array(schema)
       .flat()
       .forEach((schema) => {
-        if (schema.typeDefs) typeDefs.push(schema.typeDefs)
-        if (schema.resolvers) _.merge(resolvers, schema.resolvers)
-        if (schema.middleware) middleware.push(schema.middleware)
-        // For now we're not going to support schema guards. Maybe in the future we will
-        // if (extended.guards) _.merge(guards, extended.guards)
+        const adder = (schema) => {
+          if (schema.typeDefs) typeDefs.push(schema.typeDefs)
+          if (schema.resolvers) _.merge(resolvers, schema.resolvers)
+          if (schema.middleware) middleware.push(schema.middleware)
+          // For now we're not going to support schema guards. Maybe in the future we will
+          // if (extended.guards) _.merge(guards, extended.guards)
+        }
+
+        if (typeof schema === "function") adder(schema())
+        else adder(schema)
       })
   }
 

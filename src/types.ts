@@ -27,6 +27,8 @@ export type Schema = {
   // guards?: Guards
 }
 
+export type CallableSchema = () => Schema
+
 export type Remote = {
   [name: string]: GraphQLSchema | Promise<GraphQLSchema>
 }
@@ -38,8 +40,8 @@ export type CodegenConfig = {
 export type Config = {
   cors?: boolean
   session?: any
-  schema?: Schema | Schema[]
-  remotes?: Remote
+  schema?: Schema | CallableSchema | (Schema | CallableSchema)[]
+  remote?: Remote
   middleware?: Middleware[]
   guards?: Guards
 }
