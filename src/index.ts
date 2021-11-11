@@ -5,3 +5,4 @@ export { default as handler } from "./handler"
 export { default as Guards } from "./guards"
 
 export * as helpers from "./helpers"
+export * from "./types"
