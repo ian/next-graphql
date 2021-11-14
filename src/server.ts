@@ -6,7 +6,7 @@ export async function buildServer(config: Config): Promise<Server> {
   const schema = await buildSchema(config)
   const server = new ApolloServer({
     schema,
-    logger: console,
+    logger: config.logger,
     context: async ({ req, res }) => {
       const context = { req, res }
       if (config.session) {

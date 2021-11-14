@@ -44,6 +44,7 @@ export type Config = {
   remote?: RemoteSchemas
   middleware?: Middleware[]
   guards?: Guards
+  logger?: typeof console
 }
 
 export type Server = ApolloServer & {
