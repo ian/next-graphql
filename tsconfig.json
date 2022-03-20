@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
   "include": ["./src"],
   "exclude": ["node_modules", "dist"],
@@ -59,4 +60,24 @@
     // // `tsdx build` ignores this option, but it is commonly used when type-checking separately with `tsc`
     // "noEmit": false
   }
+=======
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es2020",
+    "lib": ["es2020", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "checkJs": false,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["examples/**/*"]
+>>>>>>> zaiste/main
 }
