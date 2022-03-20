@@ -49,7 +49,7 @@ const schema = new GraphQLSchema({
   }),
 });
 
-const handler = createGraphQLHandler(schema);
+const handler = createGraphQLHandler({ schema });
 export default handler;
 ```
 
@@ -80,7 +80,7 @@ export const schema = makeExecutableSchema({
   },
 });
 
-const handler = createGraphQLHandler(schema);
+const handler = createGraphQLHandler({ schema });
 export default handler;
 ```
 

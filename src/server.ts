@@ -1,27 +1,39 @@
-import { ApolloServer } from "apollo-server-micro"
-import { Config, Server } from "./types"
+import { createServer } from "@graphql-yoga/node"
+import { ExecuteOpts, Server, ServerConfig } from "./types"
 import { buildSchema } from "./schema"
 
-export async function buildServer(config: Config): Promise<Server> {
-  const schema = await buildSchema(config)
-  const server = new ApolloServer({
+export function buildServer(config: ServerConfig): Server {
+  const { plugins, ...schemaConfig } = config
+  const schema = buildSchema(schemaConfig)
+  const server = createServer({
     schema,
-    logger: config.logger,
-    context: async ({ req, res }) => {
-      const context = { req, res }
+    plugins,
+    context: async (context: any) => {
       if (config.session) {
-        Object.assign(context, { session: await config.session({ req }) })
+        Object.assign(context, { session: await config.session(context) })
       }
-      return context
+      return {
+        ...context,
+      }
     },
-    stopOnTerminationSignals: true,
-    introspection: process.env.NODE_ENV === "development",
+    logging: {
+      prettyLog: false,
+      logLevel: "info",
+    },
   })
+  
+  const execute = async (opts: ExecuteOpts) => {
+    const res = await server.inject(opts)
+    return res.response.json()
+  }
 
-  await server.start()
+  const executeOperation = async (req) => {
+    server.handleIncomingMessage(req)
+  }
 
-  // @ts-ignore
-  server.schema = schema
-  // @ts-ignore
-  return server
+  return {
+    schema, 
+    execute,
+    executeOperation
+  }
 }

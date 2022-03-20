@@ -1,3 +1,4 @@
+import { makeExecutableSchema } from "@graphql-tools/schema"
 import testServer from "../.jest/server"
 
 describe("#session", () => {
@@ -21,27 +22,26 @@ describe("#session", () => {
 })
 
 const server = (session) => {
+  const schema = makeExecutableSchema({
+    typeDefs: `
+    type Query {
+      session: String
+      secondEndpoint: String
+    }
+  `,
+    resolvers: {
+      Query: {
+        session: (obj, args, context) => {
+          return context.session
+        },
+        secondEndpoint: (bj, args, context) => {
+          return context.session
+        },
+      },
+    },
+  })
   return testServer({
     session,
-    schema: [
-      () => ({
-        typeDefs: `
-        type Query {
-          session: String
-          secondEndpoint: String
-        }
-      `,
-        resolvers: {
-          Query: {
-            session: (obj, args, context) => {
-              return context.session
-            },
-            secondEndpoint: (bj, args, context) => {
-              return context.session
-            },
-          },
-        },
-      }),
-    ],
+    schema,
   })
 }

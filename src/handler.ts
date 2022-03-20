@@ -1,117 +1,82 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { GraphQLSchema } from "graphql";
+import { NextApiRequest, NextApiResponse } from "next"
 
 import {
-  getGraphQLParameters,
-  processRequest,
   sendResult,
   renderGraphiQL,
-} from "graphql-helix";
+} from "graphql-helix"
+
 import {
-  envelop,
   useImmediateIntrospection,
   useLogger,
-  useSchema,
+  // useSchema,
   useTiming,
-} from "@envelop/core";
-import { useResponseCache } from '@envelop/response-cache';
-import { useGenericAuth, GenericAuthPluginOptions } from '@envelop/generic-auth';
+} from "@envelop/core"
+import { useResponseCache } from "@envelop/response-cache"
+import { useGenericAuth, GenericAuthPluginOptions } from "@envelop/generic-auth"
+import { buildServer } from "./server"
+import { Config } from "./types"
 
-interface Options {
+type Options = {
   isLogger?: boolean
   isTiming?: boolean
   isImmediateIntrospection?: boolean
   isResponseCache?: boolean
-  isAuth?: GenericAuthPluginOptions 
+  isAuth?: GenericAuthPluginOptions
 
   endpoint?: string
-}
+} & Config
 
-export default function createGraphQLHandler(schema: GraphQLSchema, { 
-  isLogger, isImmediateIntrospection, isTiming, isResponseCache,
+export default function createGraphQLHandler({
+  isLogger,
+  isImmediateIntrospection,
+  isTiming,
+  isResponseCache,
   isAuth,
-  endpoint = '/api/graphql'
+  cors,
+  endpoint = "/api/graphql",
+  ...serverConfig
 }: Options = {}) {
-
   const plugins = [
-    useSchema(schema),
+    // useSchema(schema),
     ...(isLogger ? [useLogger()] : []),
     ...(isTiming ? [useTiming()] : []),
     ...(isImmediateIntrospection ? [useImmediateIntrospection()] : []),
     ...(isResponseCache ? [useResponseCache()] : []),
     ...(isAuth ? [useGenericAuth(isAuth)] : []),
-  ];
+  ]
 
-  const getEnveloped = envelop({ plugins });
+  const server = buildServer({
+    ...serverConfig,
+    plugins,
+  })
 
   const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+    if (cors) {
+      res.setHeader("Access-Control-Allow-Origin", "*")
+      res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      )
+
+      if (req.method == "OPTIONS") {
+        res.setHeader(
+          "Access-Control-Allow-Methods",
+          "PUT, POST, PATCH, DELETE, GET"
+        )
+        return res.status(200).json({})
+      }
+    }
+
     if (req.method === "GET") {
       res.writeHead(200, {
         "content-type": "text/html",
-      });
-      res.end(renderGraphiQL({ endpoint }));
+      })
+      res.end(renderGraphiQL({ endpoint }))
     } else {
-
-      const enveloped = getEnveloped({ req });
-
-      const { body, headers, method = 'GET', query } = req;
-      const request = { body, headers, method, query };
-      
-      const params = getGraphQLParameters(request);
-      const result = await processRequest({
-        request,
-        ...enveloped,
-        ...params,
-      });
-
-      sendResult(result, res);
+      const result = await server.executeOperation(req)
+      sendResult(result, res)
     }
-  };
+  }
 
-  return handler;
-};
-
-
-// import { renderPlaygroundPage } from "graphql-playground-html"
-// import type { NextApiRequest, NextApiResponse } from "next"
-// import { Config } from "./types"
-// import { buildServer } from "./server"
-
-// function handler(config: Config = {}) {
-//   return async function handler(req: NextApiRequest, res: NextApiResponse) {
-//     if (config.cors) {
-//       res.setHeader("Access-Control-Allow-Origin", "*")
-//       res.setHeader(
-//         "Access-Control-Allow-Headers",
-//         "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-//       )
-
-//       if (req.method == "OPTIONS") {
-//         res.setHeader(
-//           "Access-Control-Allow-Methods",
-//           "PUT, POST, PATCH, DELETE, GET"
-//         )
-//         return res.status(200).json({})
-//       }
-//     }
-
-//     if (req.method === "POST") {
-//       const server = await buildServer(config)
-//       const handler = server.createHandler({
-//         path: "/api/graphql",
-//       })
-
-//       await handler(req, res)
-//     } else {
-//       res.setHeader("Content-Type", "text/html")
-//       res.send(
-//         renderPlaygroundPage({
-//           endpoint: `/api/graphql`,
-//         })
-//       )
-//       res.status(200)
-//     }
-//   }
-// }
-
-// export default handler
+  return handler
+}
