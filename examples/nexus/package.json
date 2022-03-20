@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "next": "11.1.2",
+    "next": "12.1.0",
     "next-graphql": "^2.0.0-alpha.5",
     "nexus": "^1.1.0",
     "react": "17.0.2",
