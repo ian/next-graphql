@@ -1,6 +1,7 @@
 import { GraphQLSchema } from "graphql"
-import { ApolloServer } from "apollo-server-micro"
 import { Rule } from "graphql-shield/dist/rules"
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http"
+import { NextApiRequest } from "next"
 
 export type Guards = {
   [type: string]: {
@@ -16,37 +17,30 @@ export type Middleware = (
   info: any
 ) => Promise<any>
 
-export type Schema = {
-  typeDefs?: string
-  resolvers?: {
-    [key: string]: any
-  }
-  middleware?: Middleware | Middleware[]
+export type ServerConfig = {
+  plugins?: any[],
+  session?: any
+} & SchemaConfig
 
-  // For now we're not going to support extension guards. Maybe in the future we will
-  // guards?: Guards
-}
-
-export type CallableSchema = (remote: RemoteSchemas) => Schema
-
-export type RemoteSchemas = {
-  [name: string]: GraphQLSchema | Promise<GraphQLSchema>
-}
-
-export type CodegenConfig = {
-  operations: string
+export type SchemaConfig = {
+  schema?: GraphQLSchema
+  middleware?: Middleware[]
+  guards?: Guards
 }
 
 export type Config = {
   cors?: boolean
-  session?: any
-  schema?: Schema | CallableSchema | (Schema | CallableSchema)[]
-  remote?: RemoteSchemas
-  middleware?: Middleware[]
-  guards?: Guards
-  logger?: typeof console
 }
 
-export type Server = ApolloServer & {
+export type ExecuteOpts = {
+  document: string
+  variables: object
+  operationName: string
+  headers?: IncomingHttpHeaders | OutgoingHttpHeaders
+}
+
+export type Server = {
   schema: GraphQLSchema
+  executeOperation: (req: NextApiRequest) => Promise<any>
+  execute: (ExecuteOpts) => Promise<any>
 }
