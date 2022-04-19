@@ -22,7 +22,7 @@
     "build:watch": "tsc --watch",
     "test": "jest",
     "test:watch": "jest --watch",
-    "dist": "yarn clean && yarn build"
+    "dist": "pnpm clean && pnpm build"
   },
   "author": "Ian Hunter <ian@01.studio>",
   "repository": "https://github.com/ian/next-graphql",
