@@ -11,7 +11,7 @@
     "./helpers": "./dist/helpers.js"
   },
   "files": [
-    "**/*"
+    "dist/"
   ],
   "engines": {
     "node": ">=12"
