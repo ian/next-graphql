@@ -1,3 +1,4 @@
+import { makeExecutableSchema } from "@graphql-tools/schema"
 import testServer from "../.jest/server"
 import { Guards } from "../src"
 const { or, rule } = Guards
@@ -27,24 +28,23 @@ const ruleThatShouldNotBeCalled = rule()(async () => {
 })
 
 const server = () => {
-  return testServer({
-    schema: [
-      () => ({
-        typeDefs: `
-        type Query {
-          testing: String
-        }
-      `,
-        resolvers: {
-          Query: {
-            testing: () => {
-              throw new Error("FROM QUERY")
-            },
-          },
+  const schema = makeExecutableSchema({
+    typeDefs: `
+      type Query {
+        testing: String
+      }
+    `,
+    resolvers: {
+      Query: {
+        testing: () => {
+          throw new Error("FROM QUERY")
         },
-        middleware: [alwaysFail],
-      }),
-    ],
+      },
+    },
+  })
+  return testServer({
+    schema,
+    middleware: [alwaysFail],
     guards: {
       Query: {
         testing: ruleThatShouldNotBeCalled,

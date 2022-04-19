@@ -1,25 +1,23 @@
 import testServer from "../.jest/server"
-import { remote, Guards } from "../src"
+import { Guards } from "../src"
+import { makeExecutableSchema } from "@graphql-tools/schema";
 const { or, rule } = Guards
 
 describe("#guards", () => {
   it("should allow guarded endpoints", async () => {
     const { graphql } = await serverWithGuards({
       Query: {
-        ship: failRule,
+        hello: failRule,
       },
     })
 
     const { errors, data } = await graphql(`
       query {
-        ship(id: "HOLLYWOOD") {
-          id
-          name
-        }
+        hello
       }
     `)
 
-    expect(data).toEqual({ ship: null })
+    expect(data).toEqual(null)
     expect(errors[0].message).toEqual("FAIL")
   })
 
@@ -27,24 +25,18 @@ describe("#guards", () => {
     it("should allow guarded endpoints", async () => {
       const { graphql } = await serverWithGuards({
         Query: {
-          ship: or(failRule, succeedRule),
+          hello: or(failRule, succeedRule),
         },
       })
 
       const { errors, data } = await graphql(`
         query {
-          ship(id: "HOLLYWOOD") {
-            id
-            name
-          }
+          hello
         }
       `)
 
       expect(data).toEqual({
-        ship: {
-          id: "HOLLYWOOD",
-          name: "Hollywood",
-        },
+        hello: "World",
       })
       expect(errors).toBeUndefined()
     })
@@ -52,10 +44,21 @@ describe("#guards", () => {
 })
 
 async function serverWithGuards(guards) {
-  return testServer({
-    remote: {
-      spacex: remote("https://api.spacex.land/graphql"),
+  const schema = makeExecutableSchema({
+    typeDefs: /* GraphQL */ `
+      type Query {
+        hello: String!
+      }
+    `,
+    resolvers: {
+      Query: {
+        hello: () => 'World',
+      },
     },
+  });
+
+  return testServer({
+    schema,
     guards,
   })
 }
