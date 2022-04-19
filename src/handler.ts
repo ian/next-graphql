@@ -1,20 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next"
 
-import {
-  sendResult,
-  renderGraphiQL,
-} from "graphql-helix"
+import { sendResult, renderGraphiQL } from "graphql-helix"
 
 import {
   useImmediateIntrospection,
   useLogger,
-  // useSchema,
+  useSchema,
   useTiming,
 } from "@envelop/core"
 import { useResponseCache } from "@envelop/response-cache"
 import { useGenericAuth, GenericAuthPluginOptions } from "@envelop/generic-auth"
 import { buildServer } from "./server"
 import { Config } from "./types"
+import { GraphQLSchema } from "graphql"
 
 type Options = {
   isLogger?: boolean
@@ -22,7 +20,7 @@ type Options = {
   isImmediateIntrospection?: boolean
   isResponseCache?: boolean
   isAuth?: GenericAuthPluginOptions
-
+  schema: GraphQLSchema
   endpoint?: string
 } & Config
 
@@ -33,11 +31,12 @@ export default function createGraphQLHandler({
   isResponseCache,
   isAuth,
   cors,
+  schema,
   endpoint = "/api/graphql",
   ...serverConfig
-}: Options = {}) {
+}: Options) {
   const plugins = [
-    // useSchema(schema),
+    useSchema(schema),
     ...(isLogger ? [useLogger()] : []),
     ...(isTiming ? [useTiming()] : []),
     ...(isImmediateIntrospection ? [useImmediateIntrospection()] : []),
