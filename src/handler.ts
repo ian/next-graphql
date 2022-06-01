@@ -1,18 +1,17 @@
 import { NextApiRequest, NextApiResponse } from "next"
 
-import { Config, Guards } from "./types"
-import { GraphQLSchema } from "graphql"
+import { Config } from "./types"
 import buildServer from "./server"
+import { buildSchema } from "./schema"
 
-// type Options = {
-//   cors?: boolean
-//   // schema: GraphQLSchema
-//   // guards?: Guards
-//   // session?: any
-// } & ServerConfig
-
-export default function createGraphQLHandler({ cors, ...config }: Config) {
-  const server = buildServer(config)
+export default function createGraphQLHandler({
+  cors,
+  typeDefs,
+  resolvers,
+  ...config
+}: Config) {
+  const schema = buildSchema({ typeDefs, resolvers })
+  const server = buildServer({ ...config, schema })
 
   const handler = (req: NextApiRequest, res: NextApiResponse) => {
     if (cors) {

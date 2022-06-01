@@ -16,24 +16,29 @@ export type Middleware = (
   info: any
 ) => Promise<any>
 
-export type ServerConfig = {
-  plugins?: any[]
-  session?: any
-  typeDefs: string
-  resolvers: any
-  middleware?: Middleware[]
-  guards?: Guards
-} //& SchemaConfig
-
-export type SchemaConfig = {
-  schema?: GraphQLSchema
+export type Extensions = {
   middleware?: Middleware[]
   guards?: Guards
 }
 
+export type ServerConfig = {
+  schema: GraphQLSchema
+  plugins?: any[]
+  session?: (context: any) => any
+} & Extensions
+
+export type BuildSchemaConfig = {
+  typeDefs: string
+  resolvers: any
+}
+
+export type ExtendSchemaConfig = {
+  schema?: GraphQLSchema
+} & Extensions
+
 export type Config = {
   cors?: boolean
-} & ServerConfig
+} & BuildSchemaConfig
 
 export type ExecuteOpts = {
   document: string

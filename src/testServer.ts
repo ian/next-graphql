@@ -1,5 +1,6 @@
 import { GraphQLSchema, printSchema } from "graphql"
 import buildServer from "./server"
+import { buildSchema } from "./schema"
 import { createMocks } from "node-mocks-http"
 import type { NextApiRequest, NextApiResponse } from "next"
 
@@ -10,11 +11,19 @@ type TestServer = {
   graphql: (query: string, vars?: object) => any
 }
 
-function testServer(config): TestServer {
-  const { schema } = config
+type TestConfig = {
+  typeDefs: string
+  resolvers: any
+}
+
+function testServer(config: TestConfig): TestServer {
+  const { typeDefs, resolvers, ...restConfig } = config
+
   console.log({ config })
-  const server = buildServer(config)
-  const typeDefs = printSchema(config.schema)
+
+  const schema = buildSchema({ typeDefs, resolvers })
+  const server = buildServer({ ...restConfig, schema })
+  // const typeDefs = printSchema(config.schema)
   const graphql = async (document, variables) => {
     const { req, res }: { req: NextApiRequest; res: NextApiResponse } =
       createMocks({
@@ -30,6 +39,7 @@ function testServer(config): TestServer {
       variables,
       // ...config,
     })
+
     server
       .inject({
         document,

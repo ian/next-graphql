@@ -28,7 +28,7 @@ const ruleThatShouldNotBeCalled = rule()(async () => {
 })
 
 const server = () => {
-  const schema = makeExecutableSchema({
+  return testServer({
     typeDefs: `
       type Query {
         testing: String
@@ -41,9 +41,6 @@ const server = () => {
         },
       },
     },
-  })
-  return testServer({
-    schema,
     // middleware: [alwaysFail],
     // guards: {
     //   Query: {
