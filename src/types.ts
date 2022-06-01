@@ -1,7 +1,6 @@
 import { GraphQLSchema } from "graphql"
 import { Rule } from "graphql-shield/dist/rules"
 import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http"
-import { NextApiRequest } from "next"
 
 export type Guards = {
   [type: string]: {
@@ -18,9 +17,13 @@ export type Middleware = (
 ) => Promise<any>
 
 export type ServerConfig = {
-  plugins?: any[],
+  plugins?: any[]
   session?: any
-} & SchemaConfig
+  typeDefs: string
+  resolvers: any
+  middleware?: Middleware[]
+  guards?: Guards
+} //& SchemaConfig
 
 export type SchemaConfig = {
   schema?: GraphQLSchema
@@ -30,7 +33,7 @@ export type SchemaConfig = {
 
 export type Config = {
   cors?: boolean
-}
+} & ServerConfig
 
 export type ExecuteOpts = {
   document: string
@@ -39,8 +42,8 @@ export type ExecuteOpts = {
   headers?: IncomingHttpHeaders | OutgoingHttpHeaders
 }
 
-export type Server = {
-  schema: GraphQLSchema
-  executeOperation: (req: NextApiRequest) => Promise<any>
-  execute: (ExecuteOpts) => Promise<any>
-}
+// export type Server = {
+//   schema: GraphQLSchema
+//   executeOperation: (req: NextApiRequest) => Promise<any>
+//   execute: (ExecuteOpts) => Promise<any>
+// }

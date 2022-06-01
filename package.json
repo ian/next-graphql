@@ -1,5 +1,5 @@
 {
-  "name": "next-graphql",
+  "name": "dsdfsdfjklsdfjklsdfklj",
   "version": "3.0.2-pre",
   "description": "GraphQL for Next.js",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "tsc",
-    "build:watch": "tsc --watch",
+    "dev": "tsc --watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "bump": "node_modules/npm-bump/bin/npm-bump.js",
@@ -37,31 +37,28 @@
     "clean-publish": "^4.0.0",
     "jest": "^27.2.0",
     "next": "^12.1.0",
+    "node-mocks-http": "^1.11.0",
     "nodemon": "^2.0.12",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.1.0",
     "typescript": "4.6.2"
   },
+  "peerDependencies": {
+    "graphql": "16.3.0"
+  },
   "dependencies": {
-    "@envelop/core": "^2.1.0",
-    "@envelop/generic-auth": "^4.0.0",
-    "@envelop/response-cache": "^2.1.0",
-    "@graphql-tools/code-file-loader": "6.2.6",
-    "@graphql-tools/schema": "^8.3.2",
-    "@graphql-tools/stitch": "^8.2.1",
-    "@graphql-tools/utils": "8.2.2",
-    "@graphql-tools/wrap": "8.1.0",
-    "@graphql-yoga/node": "^0.0.1-canary-ae94a57.0",
+    "@envelop/disable-introspection": "^3.3.2",
+    "@graphql-yoga/node": "^2.8.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "graphql": "16.3.0",
-    "graphql-helix": "^1.12.0",
     "graphql-middleware": "^6.1.4",
     "graphql-playground-html": "^1.6.30",
     "graphql-request": "^3.5.0",
     "graphql-shield": "^7.5.0",
     "micro": "^9.3.4",
-    "ora": "^5.4.1"
+    "ora": "^5.4.1",
+    "pino": "^8.0.0"
   }
 }

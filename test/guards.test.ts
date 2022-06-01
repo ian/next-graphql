@@ -1,6 +1,6 @@
-import testServer from "../.jest/server"
+import testServer from "../src/testServer"
 import { Guards } from "../src"
-import { makeExecutableSchema } from "@graphql-tools/schema";
+import { makeExecutableSchema } from "@graphql-tools/schema"
 const { or, rule } = Guards
 
 describe("#guards", () => {
@@ -52,10 +52,10 @@ async function serverWithGuards(guards) {
     `,
     resolvers: {
       Query: {
-        hello: () => 'World',
+        hello: () => "World",
       },
     },
-  });
+  })
 
   return testServer({
     schema,

@@ -1,15 +1,11 @@
-import _ from "lodash"
 import { applyMiddleware } from "graphql-middleware"
+import _ from "lodash"
 
-import { SchemaConfig } from "./types"
 import { guardsMiddleware } from "./guards"
+import { SchemaConfig } from "./types"
 
 export function buildSchema(opts: SchemaConfig) {
-  const {
-    schema,
-    guards: optsGuards,
-    middleware: optsMiddleware,
-  } = opts
+  const { schema, guards: optsGuards, middleware: optsMiddleware } = opts
   const middleware = []
   const guards = {}
 

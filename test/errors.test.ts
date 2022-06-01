@@ -1,7 +1,7 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import testServer from "../.jest/server"
+import testServer from "../src/testServer"
 import { Guards } from "../src"
-const { or, rule } = Guards
+const { rule } = Guards
 
 describe("error handling", () => {
   it("should handle the error and not use guards error handling", async () => {
@@ -44,11 +44,11 @@ const server = () => {
   })
   return testServer({
     schema,
-    middleware: [alwaysFail],
-    guards: {
-      Query: {
-        testing: ruleThatShouldNotBeCalled,
-      },
-    },
+    // middleware: [alwaysFail],
+    // guards: {
+    //   Query: {
+    //     testing: ruleThatShouldNotBeCalled,
+    //   },
+    // },
   })
 }

@@ -1,39 +1,45 @@
+import { useDisableIntrospection as DisableIntrospection } from "@envelop/disable-introspection"
+import { makeExecutableSchema } from "@graphql-tools/schema"
 import { createServer } from "@graphql-yoga/node"
-import { ExecuteOpts, Server, ServerConfig } from "./types"
+
 import { buildSchema } from "./schema"
+import { ServerConfig } from "./types"
 
-export function buildServer(config: ServerConfig): Server {
-  const { plugins, ...schemaConfig } = config
-  const schema = buildSchema(schemaConfig)
-  const server = createServer({
-    schema,
-    plugins,
-    context: async (context: any) => {
-      if (config.session) {
-        Object.assign(context, { session: await config.session(context) })
-      }
-      return {
-        ...context,
-      }
-    },
-    logging: {
-      prettyLog: false,
-      logLevel: "info",
-    },
+export default function buildServer(config: ServerConfig): any {
+  const { typeDefs, resolvers, guards, session } = config
+
+  const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers,
   })
-  
-  const execute = async (opts: ExecuteOpts) => {
-    const res = await server.inject(opts)
-    return res.response.json()
+
+  const options = {
+    // context: async (context: any) => {
+    //   if (session) {
+    //     Object.assign(context, { session: await session(context) })
+    //   }
+    //   return {
+    //     ...context,
+    //   }
+    // },
+
+    schema: buildSchema({
+      schema,
+      guards,
+    }),
+    // schema,
   }
 
-  const executeOperation = async (req) => {
-    server.handleIncomingMessage(req)
-  }
+  // if (process.env.NODE_ENV === "development") {
+  //   Object.assign(options, {
+  //     graphiql: true,
+  //   })
+  // } else {
+  //   Object.assign(options, {
+  //     graphiql: false,
+  //     plugins: [DisableIntrospection()],
+  //   })
+  // }
 
-  return {
-    schema, 
-    execute,
-    executeOperation
-  }
+  return createServer(options)
 }

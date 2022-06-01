@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import testServer from "../.jest/server"
+import testServer from "../src/testServer"
 
 describe("#session", () => {
   it("should allow guarded endpoints", async () => {
